@@ -1,5 +1,5 @@
 {
-  "name": "resizerjs",
+  "name": "resizer",
   "version": "0.0.1",
   "author": "Danii Nebot <daniign@gmail.com>",
   "description": "TypeScript implementation of client size image resizing and previewing before upload",
@@ -8,6 +8,10 @@
     "test": "cp -a ./src/data/. ./dist/data & ./node_modules/karma/bin/karma start"
   },
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/danii-nebot/resizer.git"
+  },
   "devDependencies": {
     "browserify": "^13.1.0",
     "jasmine-core": "2.4.1",
