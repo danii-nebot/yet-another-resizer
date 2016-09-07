@@ -11,7 +11,7 @@ describe("test Resizer object creation", () => {
 
   it("should correctly instantiate the object", () => {
     expect(resizer).toBeTruthy();
-    expect(resizer.test).toBe('test');
+    expect(resizer.config).toBeDefined();
   });
 });
 

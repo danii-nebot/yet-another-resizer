@@ -8,7 +8,7 @@ https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js
 ***************************************************************************** */
 
 export class Resizer {
-  test: string = 'test';
+  // test config object
   config: any = {
     maxWidth: 300,
     quality: 0.8,
@@ -30,7 +30,7 @@ export class Resizer {
     }
 
     if (canvas.width > this.config.maxWidth) {
-      canvas = this.scaleCanvasWithAlgorithm(canvas);
+      canvas = this.scaleCanvasWithAlgorithm(canvas, this.config.maxWidth);
     }
 
     var imageData = canvas.toDataURL('image/jpeg', this.config.quality);
@@ -48,10 +48,10 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleCanvasWithAlgorithm(canvas) {
+  scaleCanvasWithAlgorithm(canvas, maxWidth) {
     var scaledCanvas = document.createElement('canvas');
 
-    var scale = this.config.maxWidth / canvas.width;
+    var scale = maxWidth / canvas.width;
 
     scaledCanvas.width = canvas.width * scale;
     scaledCanvas.height = canvas.height * scale;
