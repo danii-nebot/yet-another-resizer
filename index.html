@@ -1,9 +1,40 @@
 <!-- http://www.html5rocks.com/en/tutorials/file/dndfiles/ -->
 <style>
-  .thumb {
-    height: 75px;
-    border: 1px solid #000;
-    margin: 10px 5px 0 0;
+
+  body {
+    padding: 20px 20px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 100px;
+    margin: 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+  }
+
+  /* TODO: browser compatibility, yo */
+  li.thumb {
+    animation: 1s fadeIn;
+    animation-fill-mode: forwards;
+
+    visibility: hidden;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  .thumb img {
+    height: 50px;
+    margin: 30px 5px 0 0;
   }
 
   #dropzone {
@@ -31,7 +62,6 @@ var exports = exports || {};
   <div id="dropzone">Drop files here</div>
   <div>
     <ul id="list">
-      <li>Uploads:</li>
     </ul>
   </div>
 </body>
@@ -39,6 +69,11 @@ var exports = exports || {};
 <script>
   var list = document.getElementById('list');
   var urlCreator = window.URL || window.webkitURL;
+
+  // setup the dnd listeners.
+  var dropZone = document.getElementById('dropzone');
+  dropZone.ondragover = handleDragOver;
+  dropZone.ondrop = handleFileSelect;
 
   function handleFileSelect(e) {
     // var files = e.target.files; // FileList object
@@ -55,7 +90,7 @@ var exports = exports || {};
 
       var f = e.dataTransfer.files[i];
 
-      // only process image files.
+      // only process image files
       // TODO: do not process (animated) gifs
       if (!f.type.match('image.*')) {
         continue;
@@ -63,7 +98,7 @@ var exports = exports || {};
 
       var reader = new FileReader();
 
-      // closure to capture the file information.
+      // closure to capture the file information
       reader.onload = (function(currentFile) {
         return function(e) {
           var img = new Image();
@@ -75,6 +110,7 @@ var exports = exports || {};
           img.onload = function() {
             // render to DOM
             var li = document.createElement('li');
+            li.className += 'thumb';
             li.appendChild(resizer.getThumbFromImage(img));
             // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
             list.appendChild(li);
@@ -103,9 +139,4 @@ var exports = exports || {};
   // TODO: web workers
   // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
   // https://developer.mozilla.org/en-US/docs/Web/API/ImageData
-
-  // setup the dnd listeners.
-  var dropZone = document.getElementById('dropzone');
-  dropZone.ondragover = handleDragOver;
-  dropZone.ondrop = handleFileSelect;
 </script>

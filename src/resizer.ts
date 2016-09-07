@@ -120,6 +120,7 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
+  // TODO: move to WebWorker ?
   applyBilinearInterpolation(srcCanvasData, destCanvasData, scale) {
     function inner(f00, f10, f01, f11, x, y) {
       var un_x = 1.0 - x;
