@@ -15,7 +15,7 @@ describe("test Resizer object creation", () => {
   });
 });
 
-describe("test local image resize", () => {
+describe("test image resize algorithms", () => {
   var resizer: Resizer;
 
   beforeEach(() => {
@@ -40,18 +40,20 @@ describe("test local image resize", () => {
       let mock = getMockImage(width, Math.floor(width / scale));
       let resized = resizer.scaleImage(mock);
       expect(resized.width).toBe(300);
+      // javascript floating point precission might be messing this up...
       expect(resized.height).toBeWithinDelta(Math.floor(300 / scale), 1);
     }
   });
 
   it("should correctly resize a battery of portrait images", () => {
     for (let i = 0; i < 5; i++) {
-      let width = 300;
+      let width = Math.floor((Math.random() + 1) * 15) * 20;
       let scale = 2 * (i + 1);
       let mock = getMockImage(width, width * scale);
       let resized = resizer.scaleImage(mock);
       expect(resized.width).toBe(300);
-      expect(resized.height).toBe(300 * scale);
+      // javascript floating point precission might be messing this up...
+      expect(resized.height).toBeWithinDelta(Math.floor(300 * scale), 1);
     }
   });
 });

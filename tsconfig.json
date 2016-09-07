@@ -25,6 +25,7 @@
   "exclude": [
     "dist/*.d.ts",
     "dist/*.spec.d.ts",
+    "dist/testUtils",
     "index.d.ts",
     "node_modules",
     "typings/browser",
