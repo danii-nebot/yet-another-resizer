@@ -38,17 +38,19 @@ export class Resizer {
 
   // TODO: refactor!
   scaleAndCropThumb(img, thumbSize) {
-    let thumbCanvas = document.createElement('canvas');
-    thumbCanvas.width = thumbSize;
-    thumbCanvas.height = thumbSize;
 
     let posx = Math.max(0, img.width - img.height) >> 1, // bitwise /2 and floor
       posy = Math.max(0, img.height - img.width) >> 1, // bitwise /2 and floor
-      sizeScaled = Math.min(img.width, img.height);
+      cropSize = Math.min(img.width, img.height),
+      thumbCanvas = document.createElement('canvas');
 
+    thumbCanvas.width = thumbSize;
+    thumbCanvas.height = thumbSize;
+
+    // TODO: scale progressively using getHalfScaleCanvas() function, if thumb quality is crap
     thumbCanvas.getContext('2d').drawImage(img,
       posx, posy,   // start from the top and left coords,
-      sizeScaled, sizeScaled,   // get a square area from the source image (crop),
+      cropSize, cropSize,   // get a square area from the source image (crop),
       0, 0,     // place the result at 0, 0 in the target canvas,
       thumbSize, thumbSize); // with as width / height (scale)
 
