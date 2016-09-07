@@ -1,0 +1,111 @@
+<!-- http://www.html5rocks.com/en/tutorials/file/dndfiles/ -->
+<style>
+  .thumb {
+    height: 75px;
+    border: 1px solid #000;
+    margin: 10px 5px 0 0;
+  }
+
+  #dropzone {
+    border: 2px dashed #bbb;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 25px;
+    text-align: center;
+    font: 20pt bold;
+    color: #bbb;
+}
+</style>
+
+<!--  eh -->
+<script>
+var exports = exports || {};
+</script>
+<!--  /eh -->
+
+<script src="./resizer.js"></script>
+
+<!-- TODO: correct html structure -->
+<body>
+  <div id="dropzone">Drop files here</div>
+  <div>
+    <ul id="list">
+      <li>Uploads:</li>
+    </ul>
+  </div>
+</body>
+
+<script>
+  var list = document.getElementById('list');
+  var urlCreator = window.URL || window.webkitURL;
+
+  function handleFileSelect(e) {
+    // var files = e.target.files; // FileList object
+
+    e.stopPropagation();
+    e.preventDefault();
+
+    var files = e.dataTransfer.files; // FileList object.
+    var resizer = new Resizer();
+
+    // loop through the FileList and create thumbnails
+    var length = e.dataTransfer.files.length;
+    for (var i = 0; i < length; i++) {
+
+      var f = e.dataTransfer.files[i];
+
+      // only process image files.
+      // TODO: do not process (animated) gifs
+      if (!f.type.match('image.*')) {
+        continue;
+      }
+
+      var reader = new FileReader();
+
+      // closure to capture the file information.
+      reader.onload = (function(currentFile) {
+        return function(e) {
+          var img = new Image();
+          var blob = new Blob([e.target.result], {type: currentFile.type});
+
+          img.src = urlCreator.createObjectURL(blob); // from blob
+          // e.target.result; // this works directly from readAsDataURL
+
+          img.onload = function() {
+            // render to DOM
+            var li = document.createElement('li');
+            li.appendChild(resizer.getThumbFromImage(img));
+            // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
+            list.appendChild(li);
+          }
+        };
+      })(f);
+
+      // read in the image file
+      // reader.readAsDataURL(f); // as dataURL (simpler but seems slower - TEST)
+      reader.readAsArrayBuffer(f); // as blob
+    }
+  };
+
+  function handleDragOver(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  };
+
+  // TODO: regular boring upload
+  // document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+  // TODO: folder upload
+  // https://developers.google.com/web/updates/2012/07/Drag-and-drop-a-folder-onto-Chrome-now-available?hl=en
+
+  // TODO: web workers
+  // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
+  // https://developer.mozilla.org/en-US/docs/Web/API/ImageData
+
+  // setup the dnd listeners.
+  var dropZone = document.getElementById('dropzone');
+  dropZone.ondragover = handleDragOver;
+  dropZone.ondrop = handleFileSelect;
+</script>
