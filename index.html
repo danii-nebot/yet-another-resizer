@@ -108,12 +108,14 @@ var exports = exports || {};
           // e.target.result; // this works directly from readAsDataURL
 
           img.onload = function() {
-            // render to DOM
-            var li = document.createElement('li');
-            li.className += 'thumb';
-            li.appendChild(resizer.getThumbFromImage(img));
-            // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
-            list.appendChild(li);
+            setTimeout(function() {
+              // render to DOM
+              var li = document.createElement('li');
+              li.className += 'thumb';
+              li.appendChild(resizer.getThumbFromImage(img));
+              // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
+              list.appendChild(li);
+            }, 0);
           }
         };
       })(f);
