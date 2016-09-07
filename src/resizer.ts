@@ -11,11 +11,49 @@ export class Resizer {
   // test config object
   config: any = {
     maxWidth: 300,
+    thumbSize: 50,
     quality: 0.8,
     debug: true
   };
 
   constructor() { }
+
+  // quick & dirty thumbnail preview
+  getThumbFromImage(img): any {
+    // TODO: do we even need this??
+    // var canvas = document.createElement('canvas');
+    // canvas.width = img.width;
+    // canvas.height = img.height;
+    // canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    var canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
+    var imageData = canvas.toDataURL('image/jpeg', this.config.quality);
+
+    if (this.config.debug) {
+      let thumb = new Image();
+      thumb.src = imageData;
+      return thumb;
+    }
+  }
+
+  // TODO: refactor!
+  scaleAndCropThumb(img, thumbSize) {
+    let thumbCanvas = document.createElement('canvas');
+    thumbCanvas.width = thumbSize;
+    thumbCanvas.height = thumbSize;
+
+    let posx = Math.max(0, img.width - img.height) >> 1, // bitwise /2 and floor
+      posy = Math.max(0, img.height - img.width) >> 1, // bitwise /2 and floor
+      sizeScaled = Math.min(img.width, img.height);
+
+    thumbCanvas.getContext('2d').drawImage(img,
+      posx, posy,   // start from the top and left coords,
+      sizeScaled, sizeScaled,   // get a square area from the source image (crop),
+      0, 0,     // place the result at 0, 0 in the target canvas,
+      thumbSize, thumbSize); // with as width / height (scale)
+
+    return thumbCanvas;
+  }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js

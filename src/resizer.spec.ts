@@ -56,4 +56,15 @@ describe("test image resize algorithms", () => {
       expect(resized.height).toBeWithinDelta(Math.floor(300 * scale), 1);
     }
   });
+
+  it("should correctly create thumbs from a battery of images of different sizes", () => {
+    for (let i = 0; i < 5; i++) {
+      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let height = Math.floor((Math.random() + 1) * 15) * 20;
+      let mock = getMockImage(width, height);
+      let resized = resizer.getThumbFromImage(mock);
+      expect(resized.width).toBe(50);
+      expect(resized.height).toBe(50);
+    }
+  });
 });
