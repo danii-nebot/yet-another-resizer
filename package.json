@@ -5,7 +5,7 @@
   "description": "TypeScript implementation of client size image resizing and previewing before upload",
   "main": "index.js",
   "scripts": {
-    "test": "cp -a ./src/data/. ./dist/data & ./node_modules/karma/bin/karma start"
+    "test": "./node_modules/karma/bin/karma start"
   },
   "license": "ISC",
   "repository": {
