@@ -2,20 +2,25 @@ var gulp          = require('gulp'),
     browserSync   = require('browser-sync').create(),
     reload        = browserSync.reload,
     distDir       = './dist/',
-    files         = ['index.html'];
+    demoDir       = './demo/',
+    jsFiles       = [distDir + 'resizer.js'];
 
-gulp.task('html', function() {
-  return gulp.src(files)
-      .pipe(gulp.dest(distDir));
+gulp.task('copy-scripts', function() {
+  return gulp.src(jsFiles)
+      .pipe(gulp.dest(demoDir + 'js/'));
 });
 
-gulp.task('html-reload', ['html'], function() {
+gulp.task('reload', function() {
   reload();
 })
 
-gulp.task('default', ['html'], function() {
+gulp.task('reload-scripts', ['copy-scripts'], function() {
+  reload();
+})
+
+gulp.task('default', ['copy-scripts'], function() {
   browserSync.init([distDir+'*'], {
-    server: distDir,
+    server: demoDir,
     port: 4000,
     notify: false,
     ui: {
@@ -23,5 +28,6 @@ gulp.task('default', ['html'], function() {
     }
   });
 
-  gulp.watch(files, ['html-reload']);
+  gulp.watch(jsFiles, ['reload-scripts']);
+  gulp.watch(demoDir + '*.*', ['reload'])
 });

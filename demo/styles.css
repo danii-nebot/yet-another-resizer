@@ -1,0 +1,46 @@
+body {
+  padding: 20px 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 100px;
+  margin: 0;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+/* TODO: browser compatibility, yo */
+li.thumb {
+  animation: 1s fadeIn;
+  animation-fill-mode: forwards;
+
+  visibility: hidden;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.thumb img {
+  height: 50px;
+  margin: 30px 5px 0 0;
+}
+
+#dropzone {
+  border: 2px dashed #bbb;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 25px;
+  text-align: center;
+  font: 20pt bold;
+  color: #bbb;
+}

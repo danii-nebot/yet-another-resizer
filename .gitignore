@@ -2,6 +2,7 @@
 
 # compiled output
 /dist
+/demo/js
 
 # dependencies
 /node_modules

@@ -1,61 +1,12 @@
 <!-- http://www.html5rocks.com/en/tutorials/file/dndfiles/ -->
-<style>
-
-  body {
-    padding: 20px 20px;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 100px;
-    margin: 0;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-  }
-
-  /* TODO: browser compatibility, yo */
-  li.thumb {
-    animation: 1s fadeIn;
-    animation-fill-mode: forwards;
-
-    visibility: hidden;
-  }
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
-
-  .thumb img {
-    height: 50px;
-    margin: 30px 5px 0 0;
-  }
-
-  #dropzone {
-    border: 2px dashed #bbb;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    padding: 25px;
-    text-align: center;
-    font: 20pt bold;
-    color: #bbb;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 
 <!--  eh -->
 <script>
 var exports = exports || {};
 </script>
 <!--  /eh -->
-
-<script src="./resizer.js"></script>
+<script src="./js/resizer.js"></script>
 
 <!-- TODO: correct html structure -->
 <body>
