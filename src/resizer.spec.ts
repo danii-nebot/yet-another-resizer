@@ -42,27 +42,84 @@ describe("test image resize algorithms", () => {
     }
   });
 
-  it("should correctly resize a battery of landscape images", () => {
+  it("should correctly resize a battery of landscape images to fixed width", () => {
     for (let i = 0; i < 5; i++) {
-      let width = Math.floor((Math.random() + 1) * 15) * 100;
-      let scale = 2 * (i + 1);
-      let mock = getMockImage(width, Math.floor(width / scale));
+      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let mock = getMockImage(width, width - (i + 1) * 25);
+      let scale = mock.width / mock.height;
       let resized = resizer.scaleImage(mock);
+
       expect(resized.width).toBe(300);
-      // javascript floating point precission might be messing this up...
-      expect(resized.height).toBeWithinDelta(Math.floor(300 / scale), 1);
+      // javascript floating point precision might be messing this up...
+      expect(resized.height).toBeWithinDelta(300 / scale, 1);
     }
   });
 
-  it("should correctly resize a battery of portrait images", () => {
+  it("should correctly resize a battery of landscape images to fixed height", () => {
+    resizer.config = {
+      maxWidth: 0,
+      maxHeight: 300
+    };
+
     for (let i = 0; i < 5; i++) {
       let width = Math.floor((Math.random() + 1) * 15) * 20;
-      let scale = 2 * (i + 1);
-      let mock = getMockImage(width, width * scale);
+      let mock = getMockImage(width, width - (i + 1) * 25);
+      let scale = mock.width / mock.height;
+      let resized = resizer.scaleImage(mock);
+      expect(resized.height).toBe(300);
+      // javascript floating point precision might be messing this up...
+      expect(resized.width).toBeWithinDelta(300 * scale, 1);
+    }
+  });
+
+  it("should correctly resize a battery of portrait images to fixed width", () => {
+    for (let i = 0; i < 5; i++) {
+      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let mock = getMockImage(width, width + (i + 1) * 25);
+      let scale = mock.width / mock.height;
       let resized = resizer.scaleImage(mock);
       expect(resized.width).toBe(300);
-      // javascript floating point precission might be messing this up...
-      expect(resized.height).toBeWithinDelta(Math.floor(300 * scale), 1);
+      // javascript floating point precision might be messing this up...
+      expect(resized.height).toBeWithinDelta(300 / scale, 1);
+    }
+  });
+
+  it("should correctly resize a battery of portrait images to fixed height", () => {
+    resizer.config = {
+      maxWidth: 0,
+      maxHeight: 300
+    };
+
+    for (let i = 0; i < 5; i++) {
+      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let mock = getMockImage(width, width + (i + 1) * 25);
+      let scale = mock.width / mock.height;
+      let resized = resizer.scaleImage(mock);
+      expect(resized.height).toBe(300);
+      // javascript floating point precision might be messing this up...
+      expect(resized.width).toBeWithinDelta(Math.floor(300 * scale), 1);
+    }
+  });
+
+  it("should correctly create resize a battery of images of different sizes into a box", () => {
+    resizer.config = {
+      maxWidth: 300,
+      maxHeight: 300
+    };
+
+    for (let i = 0; i < 5; i++) {
+      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let height = Math.floor((Math.random() + 1) * 15) * 20;
+      let mock = getMockImage(width, height);
+      let scale = mock.width / mock.height;
+      let resized = resizer.scaleImage(mock);
+      if (scale >= 1) {
+        expect(resized.width).toBe(300);
+        expect(resized.height).toBeWithinDelta(Math.floor(300 / scale), 1);
+      } else {
+        expect(resized.height).toBe(300);
+        expect(resized.width).toBeWithinDelta(Math.floor(300 * scale), 1);
+      }
     }
   });
 
