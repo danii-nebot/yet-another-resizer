@@ -11,7 +11,8 @@ export class Resizer {
   // test config object
   // if only maxWidth or maxHeight are present, limit that property
   // if both, fit to box size
-  config: any = {
+  // private var with getter/setter prefixed with "_": https://github.com/angular/angular.io/issues/1108
+  _config: any = {
     maxWidth: 300,
     // maxHeight: 300, // TODO: test!
     thumbSize: 50,
@@ -19,7 +20,17 @@ export class Resizer {
     debug: true
   };
 
-  constructor() { }
+  constructor(configParam: any = null) {
+    this.config = configParam;
+  }
+
+  get config(): any {
+    return this._config;
+  }
+
+  set config(configParam: any) {
+    Object.assign(this._config, configParam);
+  }
 
   // quick & dirty thumbnail preview
   getThumbFromImage(img): any {

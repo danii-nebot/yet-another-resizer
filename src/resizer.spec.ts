@@ -13,6 +13,15 @@ describe("test Resizer object creation", () => {
     expect(resizer).toBeTruthy();
     expect(resizer.config).toBeDefined();
   });
+
+  it("should correctly assign config objects", () => {
+    let configQualityDefault = resizer.config.quality;
+    resizer.config = { test: 'test', maxWidth: 'test' };
+    expect(resizer.config.test).toBe('test');
+    expect(resizer.config.maxWidth).toBe('test');
+    expect(resizer.config.quality).toBe(configQualityDefault);
+
+  });
 });
 
 describe("test image resize algorithms", () => {
