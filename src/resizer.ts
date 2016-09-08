@@ -9,8 +9,11 @@ https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js
 
 export class Resizer {
   // test config object
+  // if only maxWidth or maxHeight are present, limit that property
+  // if both, fit to box size
   config: any = {
     maxWidth: 300,
+    // maxHeight: 300, // TODO: test!
     thumbSize: 50,
     quality: 0.8,
     debug: true
@@ -60,19 +63,48 @@ export class Resizer {
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   scaleImage(img, completionCallback = null): any {
-    var canvas = document.createElement('canvas');
+
+    let boxWidth = this.config.maxWidth || 0,
+      boxHeight = this.config.maxHeight || 0,
+      snapToWidth = false;
+
+    if (!boxWidth && !boxHeight) {
+      // something is wrong
+      // TODO: error message?
+      return;
+    }
+
+    // TODO: refactor me pls
+    let canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+    let scale = 1;
 
-    while (canvas.width >= (2 * this.config.maxWidth)) {
-      canvas = this.getHalfScaleCanvas(canvas);
+    if (boxWidth && boxHeight) {
+      // adjust to box
+      snapToWidth = (canvas.width >= canvas.height);
+    } else {
+      snapToWidth = !!this.config.maxWidth;
     }
 
-    if (canvas.width > this.config.maxWidth) {
-      canvas = this.scaleCanvasWithAlgorithm(canvas, this.config.maxWidth);
+    if (snapToWidth) {
+      while (canvas.width >= (2 * boxWidth)) {
+        canvas = this.getHalfScaleCanvas(canvas);
+      }
+      scale = boxWidth / canvas.width;
+    } else { // snap to height
+      while (canvas.height >= (2 * boxHeight)) {
+        canvas = this.getHalfScaleCanvas(canvas);
+      }
+      scale = boxHeight / canvas.height;
     }
 
+    if (scale !== 1) {
+      canvas = this.scaleCanvasWithAlgorithm(canvas, scale);
+    }
+
+    // TODO: keep image type from original if png!
     var imageData = canvas.toDataURL('image/jpeg', this.config.quality);
 
     if (this.config.debug) {
@@ -88,10 +120,8 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleCanvasWithAlgorithm(canvas, maxWidth) {
+  scaleCanvasWithAlgorithm(canvas, scale) {
     var scaledCanvas = document.createElement('canvas');
-
-    var scale = maxWidth / canvas.width;
 
     scaledCanvas.width = canvas.width * scale;
     scaledCanvas.height = canvas.height * scale;
