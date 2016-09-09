@@ -96,15 +96,17 @@
               feedbackEl.textContent = 'uploading...';
               li.appendChild(feedbackEl);
 
-              // render thumb to DOM
-              resizer.getThumbFromImage(img, function(imageData) {
-                thumb.src = imageData;
-                // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
-                list.appendChild(li);
-              });
-
-              // send resized image to server
               resizer.scaleImage(img, function(imageData) {
+
+                // create thumb from resized image
+                thumb.src = imageData;
+                resizer.getThumbFromImage(thumb, function(imageData) {
+                  thumb.src = imageData;
+                  // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
+                  list.appendChild(li);
+                });
+
+                // send resized image to server
                 sendFile(imageData, function(progress) {
                   if(progress === 100) {
                     feedbackEl.textContent = 'upload ok!';
