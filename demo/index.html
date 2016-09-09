@@ -12,7 +12,7 @@
     <!--  /eh -->
   </head>
   <body>
-    <div id="dropzone">Drop files here</div>
+    <div class="dropzone" id="dropzone">drop files here for optimized upload</div>
     <div>
       <ul id="list">
       </ul>
@@ -20,26 +20,43 @@
   </body>
 
   <script src="./js/resizer.js"></script>
+  <!--  exposes URI_DEMO: uri of demo server script -->
+  <script src="./js/serverdemo.js"></script>
 
   <script>
   var list = document.getElementById('list');
   var urlCreator = window.URL || window.webkitURL;
 
-  // setup the dnd listeners.
-  var dropZone = document.getElementById('dropzone');
-  dropZone.ondragover = handleDragOver;
-  dropZone.ondrop = handleFileSelect;
+  // setup the dnd listeners
+  // TODO: browser support? https://www.sitepoint.com/html5-file-drag-and-drop/
+  var dropzone = document.getElementById('dropzone');
+  dropzone.ondragover = handleDragOver;
+  dropzone.ondrop = handleFileSelect;
+
+  // http://www.lostiemposcambian.com/blog/javascript/guardando-pngs-en-el-servidor-con-html5/
+  function sendFile(data) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function() {
+      // request complete
+      if (xhr.readyState == 4) {
+        console.log('ok ' + xhr.responseText);
+      }
+    }
+
+    xhr.open('POST', URI_DEMO, true);
+    xhr.setRequestHeader('Content-Type', 'application/upload');
+    xhr.send(data);
+  }
 
   function handleFileSelect(e) {
-    // var files = e.target.files; // FileList object
-
     e.stopPropagation();
     e.preventDefault();
 
-    var files = e.dataTransfer.files; // FileList object.
-    var resizer = new Resizer();
+    var files = e.dataTransfer.files; // FileList object
+    var resizer = new Resizer({ maxWidth: 600, thumbSize: 100 });
 
-    // loop through the FileList and create thumbnails
+    // loop through the FileList
     var length = e.dataTransfer.files.length;
     for (var i = 0; i < length; i++) {
 
@@ -64,14 +81,25 @@
 
           img.onload = function() {
             setTimeout(function() {
-              // render to DOM
-              var li = document.createElement('li');
-              li.className += 'thumb';
-              li.appendChild(resizer.getThumbFromImage(img));
-              // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
-              list.appendChild(li);
+
+              // render thumb to DOM
+              resizer.getThumbFromImage(img, function(imageData) {
+                var li = document.createElement('li');
+                li.className += 'thumb';
+                var thumb = new Image();
+                thumb.src = imageData;
+                li.appendChild(thumb);
+                // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
+                list.appendChild(li);
+              });
+
+              // send resized image to server
+              resizer.scaleImage(img, function(imageData) {
+                sendFile(imageData);
+              });
+
             }, 0);
-          }
+          };
         };
       })(f);
 
