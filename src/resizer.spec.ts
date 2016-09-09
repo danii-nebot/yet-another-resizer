@@ -6,7 +6,8 @@ describe("test Resizer object creation", () => {
   var resizer: Resizer;
 
   beforeEach(() => {
-    resizer = new Resizer();
+    // tests are not async
+    resizer = new Resizer({ debug: true });
   });
 
   it("should correctly instantiate the object", () => {
@@ -28,7 +29,8 @@ describe("test image resize algorithms", () => {
   var resizer: Resizer;
 
   beforeEach(() => {
-    resizer = new Resizer();
+    // tests are not async
+    resizer = new Resizer({ debug: true });
     jasmine.addMatchers(customMatchers);
   });
 

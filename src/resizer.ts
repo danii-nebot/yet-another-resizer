@@ -14,10 +14,8 @@ export class Resizer {
   // private var with getter/setter prefixed with "_": https://github.com/angular/angular.io/issues/1108
   _config: any = {
     maxWidth: 300,
-    // maxHeight: 300, // TODO: test!
     thumbSize: 50,
-    quality: 0.8,
-    debug: true
+    quality: 0.8
   };
 
   constructor(configParam: any = null) {
@@ -33,20 +31,15 @@ export class Resizer {
   }
 
   // quick & dirty thumbnail preview
-  getThumbFromImage(img): any {
-    // TODO: do we even need this??
-    // var canvas = document.createElement('canvas');
-    // canvas.width = img.width;
-    // canvas.height = img.height;
-    // canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-
-    var canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
-    var imageData = canvas.toDataURL('image/jpeg', this.config.quality);
+  getThumbFromImage(img, completionCallback: Function = null): any {
+    let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
 
     if (this.config.debug) {
-      let thumb = new Image();
-      thumb.src = imageData;
-      return thumb;
+      return canvas;
+    } else {
+      // TODO: pngs ?
+      let imageData = canvas.toDataURL('image/jpeg', this.config.quality);
+      completionCallback(imageData);
     }
   }
 
@@ -73,7 +66,7 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleImage(img, completionCallback = null): any {
+  scaleImage(img, completionCallback: Function = null): any {
 
     let boxWidth = this.config.maxWidth || 0,
       boxHeight = this.config.maxHeight || 0,
@@ -115,18 +108,13 @@ export class Resizer {
       canvas = this.scaleCanvasWithAlgorithm(canvas, scale);
     }
 
-    // TODO: keep image type from original if png!
-    var imageData = canvas.toDataURL('image/jpeg', this.config.quality);
-
     if (this.config.debug) {
-      let resizedImage = new Image();
-      resizedImage.src = imageData;
-      return resizedImage;
+      return canvas;
+    } else {
+      // TODO: keep image type from original if png!
+      var imageData = canvas.toDataURL('image/jpeg', this.config.quality);
+      completionCallback(imageData);
     }
-
-    // TODO:
-    // ???
-    // this.performUpload(imageData, completionCallback);
   }
 
   // source:
