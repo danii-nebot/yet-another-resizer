@@ -34,6 +34,10 @@ li.thumb {
   margin: 30px 25px 0 0;
 }
 
+.thumb span {
+  display: block;
+}
+
 .dropzone {
   border: 2px dashed #bbb;
   -moz-border-radius: 5px;

@@ -34,13 +34,14 @@
   dropzone.ondrop = handleFileSelect;
 
   // http://www.lostiemposcambian.com/blog/javascript/guardando-pngs-en-el-servidor-con-html5/
-  function sendFile(data) {
+  function sendFile(data, callback) {
     var xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function() {
       // request complete
       if (xhr.readyState == 4) {
         console.log('ok ' + xhr.responseText);
+        callback();
       }
     }
 
@@ -81,21 +82,28 @@
 
           img.onload = function() {
             setTimeout(function() {
+              var li = document.createElement('li');
+              li.className += 'thumb';
+
+              var thumb = new Image();
+              li.appendChild(thumb);
+
+              var feedbackEl = document.createElement('span');
+              feedbackEl.textContent = 'uploading...';
+              li.appendChild(feedbackEl);
 
               // render thumb to DOM
               resizer.getThumbFromImage(img, function(imageData) {
-                var li = document.createElement('li');
-                li.className += 'thumb';
-                var thumb = new Image();
                 thumb.src = imageData;
-                li.appendChild(thumb);
                 // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
                 list.appendChild(li);
               });
 
               // send resized image to server
               resizer.scaleImage(img, function(imageData) {
-                sendFile(imageData);
+                sendFile(imageData, function() {
+                  feedbackEl.textContent = 'upload ok!';
+                });
               });
 
             }, 0);
