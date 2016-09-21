@@ -39,6 +39,15 @@ export class Resizer {
 
   // quick & dirty thumbnail cut preview
   getThumbFromImage(img, imgType = 'image/png', completionCallback: Function = null): any {
+    if (!this.config.thumbSize) {
+      // something is wrong
+      console.warn(`Error on resizer.ts getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`);
+      if (completionCallback) {
+        completionCallback();
+      }
+      return;
+    }
+
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
 
     if (this.config.test || !completionCallback) {
@@ -78,8 +87,10 @@ export class Resizer {
     if (!boxWidth && !boxHeight) {
       // something is wrong
       console.warn(`Error on resizer.ts scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`);
-      if (!completionCallback) return;
-      completionCallback();
+      if (completionCallback) {
+        completionCallback();
+      }
+      return;
     }
 
     let scale = 1;
