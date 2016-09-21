@@ -16,8 +16,21 @@ if($data) {
   // Need to decode before saving since the data we received is already base64 encoded
   $decodedData = base64_decode($filteredData);
 
+  // get mime type
+  $file_info = new finfo(FILEINFO_MIME_TYPE);
+  $mime_type = $file_info->buffer($decodedData);
+
+  $ext = '';
+  switch($mime_type) {
+    case 'image/png':
+      $ext = 'png';
+    break;
+    default:
+      $ext = 'jpg';
+  }
+
   // store in server
-  $fic_name = 'img'.rand(1000,9999).'.png';
+  $fic_name = 'img'.rand(1000,9999).'.'.$ext;
   $fp = fopen('./uploads/'.$fic_name, 'wb');
   $ok = fwrite( $fp, $decodedData);
   fclose($fp);

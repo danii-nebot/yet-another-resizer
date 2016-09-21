@@ -1,5 +1,5 @@
 // I can't believe something like this is not already included in jasmine :/
-export var customMatchers = {
+export const customMatchers: any = {
   toBeWithinDelta: (util, customEqualityTesters) => {
     return {
       compare: (actual, expected, delta) => {

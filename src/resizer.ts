@@ -27,18 +27,17 @@ export class Resizer {
   }
 
   set config(configParam: any) {
-    Object.assign(this._config, configParam);
+    (<any>Object).assign(this._config, configParam);
   }
 
   // quick & dirty thumbnail preview
-  getThumbFromImage(img, completionCallback: Function = null): any {
+  getThumbFromImage(img, imgType = 'image/png', completionCallback: Function = null): any {
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
 
     if (this.config.debug) {
       return canvas;
     } else {
-      // TODO: pngs ?
-      let imageData = canvas.toDataURL('image/jpeg', this.config.quality);
+      let imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
       completionCallback(imageData);
     }
   }
@@ -66,7 +65,7 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleImage(img, completionCallback: Function = null): any {
+  scaleImage(img, imgType = 'image/png', completionCallback: Function = null): any {
 
     let boxWidth = this.config.maxWidth || 0,
       boxHeight = this.config.maxHeight || 0,
@@ -111,8 +110,7 @@ export class Resizer {
     if (this.config.debug) {
       return canvas;
     } else {
-      // TODO: keep image type from original if png!
-      var imageData = canvas.toDataURL('image/jpeg', this.config.quality);
+      var imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
       completionCallback(imageData);
     }
   }

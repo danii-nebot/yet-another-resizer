@@ -50,7 +50,7 @@
     }
 
     xhr.open('POST', URI_DEMO, true);
-    xhr.setRequestHeader('Content-Type', 'application/upload');
+    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     xhr.send(data);
   }
 
@@ -58,7 +58,6 @@
     e.stopPropagation();
     e.preventDefault();
 
-    var files = e.dataTransfer.files; // FileList object
     var resizer = new Resizer({ maxWidth: 600, thumbSize: 100 });
 
     // loop through the FileList
@@ -96,11 +95,11 @@
               feedbackEl.textContent = 'uploading...';
               li.appendChild(feedbackEl);
 
-              resizer.scaleImage(img, function(imageData) {
+              resizer.scaleImage(img, currentFile.type, function(imageData) {
 
                 // create thumb from resized image
                 thumb.src = imageData;
-                resizer.getThumbFromImage(thumb, function(imageData) {
+                resizer.getThumbFromImage(thumb, currentFile.type, function(imageData) {
                   thumb.src = imageData;
                   // '<img class="thumb" src="' + thumb + '" title="' + escape(currentFile.name) + '"/>';
                   list.appendChild(li);
@@ -125,13 +124,13 @@
       // reader.readAsDataURL(f); // as dataURL (simpler but seems slower - TEST)
       reader.readAsArrayBuffer(f); // as blob
     }
-  };
+  }
 
   function handleDragOver(e) {
     e.stopPropagation();
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
-  };
+  }
 
   // TODO: regular boring upload
   // document.getElementById('files').addEventListener('change', handleFileSelect, false);
