@@ -30,6 +30,13 @@ export class Resizer {
     (<any>Object).assign(this._config, configParam);
   }
 
+  createCanvas(width, height) {
+    let canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    return canvas;
+  }
+
   // quick & dirty thumbnail preview
   getThumbFromImage(img, imgType = 'image/png', completionCallback: Function = null): any {
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
@@ -48,10 +55,7 @@ export class Resizer {
     let posx = Math.max(0, img.width - img.height) >> 1, // bitwise /2 and floor
       posy = Math.max(0, img.height - img.width) >> 1, // bitwise /2 and floor
       cropSize = Math.min(img.width, img.height),
-      thumbCanvas = document.createElement('canvas');
-
-    thumbCanvas.width = thumbSize;
-    thumbCanvas.height = thumbSize;
+      thumbCanvas = this.createCanvas(thumbSize, thumbSize);
 
     // TODO: scale progressively using getHalfScaleCanvas() function, if thumb quality is crap
     thumbCanvas.getContext('2d').drawImage(img,
@@ -77,10 +81,7 @@ export class Resizer {
       return;
     }
 
-    // TODO: refactor me pls
-    let canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
+    let canvas = this.createCanvas(img.width, img.height);
     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
     let scale = 1;
 
@@ -118,10 +119,7 @@ export class Resizer {
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   scaleCanvasWithAlgorithm(canvas, scale) {
-    var scaledCanvas = document.createElement('canvas');
-
-    scaledCanvas.width = canvas.width * scale;
-    scaledCanvas.height = canvas.height * scale;
+    var scaledCanvas = this.createCanvas(canvas.width * scale, canvas.height * scale);
 
     var srcImgData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
     var destImgData = scaledCanvas.getContext('2d').createImageData(scaledCanvas.width, scaledCanvas.height);
@@ -136,12 +134,8 @@ export class Resizer {
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   getHalfScaleCanvas(canvas) {
-    var halfCanvas = document.createElement('canvas');
-    halfCanvas.width = canvas.width / 2;
-    halfCanvas.height = canvas.height / 2;
-
+    var halfCanvas = this.createCanvas(canvas.width / 2, canvas.height / 2);
     halfCanvas.getContext('2d').drawImage(canvas, 0, 0, halfCanvas.width, halfCanvas.height);
-
     return halfCanvas;
   }
 
