@@ -11,7 +11,7 @@ export class Resizer {
   // test config object
   // if only maxWidth or maxHeight are present, limit that property
   // if both, fit to box size
-  // private var with getter/setter prefixed with "_": https://github.com/angular/angular.io/issues/1108
+  // private property with getter/setter prefixed with "_": https://github.com/angular/angular.io/issues/1108
   _config: any = {
     maxWidth: 300,
     thumbSize: 50,
@@ -37,21 +37,19 @@ export class Resizer {
     return canvas;
   }
 
-  // quick & dirty thumbnail preview
+  // quick & dirty thumbnail cut preview
   getThumbFromImage(img, imgType = 'image/png', completionCallback: Function = null): any {
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
 
-    if (this.config.debug) {
+    if (this.config.test || !completionCallback) {
       return canvas;
-    } else {
-      let imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
-      completionCallback(imageData);
     }
+
+    let imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
+    completionCallback(imageData);
   }
 
-  // TODO: refactor!
   scaleAndCropThumb(img, thumbSize) {
-
     let posx = Math.max(0, img.width - img.height) >> 1, // bitwise /2 and floor
       posy = Math.max(0, img.height - img.width) >> 1, // bitwise /2 and floor
       cropSize = Math.min(img.width, img.height),
@@ -70,19 +68,20 @@ export class Resizer {
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   scaleImage(img, imgType = 'image/png', completionCallback: Function = null): any {
-
     let boxWidth = this.config.maxWidth || 0,
       boxHeight = this.config.maxHeight || 0,
-      snapToWidth = false;
+      snapToWidth = false,
+      canvas = this.createCanvas(img.width, img.height);
+
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
 
     if (!boxWidth && !boxHeight) {
       // something is wrong
-      // TODO: error message?
-      return;
+      console.warn(`Error on resizer.ts scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`);
+      if (!completionCallback) return;
+      completionCallback();
     }
 
-    let canvas = this.createCanvas(img.width, img.height);
-    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
     let scale = 1;
 
     if (boxWidth && boxHeight) {
@@ -108,33 +107,30 @@ export class Resizer {
       canvas = this.scaleCanvasWithAlgorithm(canvas, scale);
     }
 
-    if (this.config.debug) {
+    if (this.config.test || !completionCallback) {
       return canvas;
-    } else {
-      var imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
-      completionCallback(imageData);
     }
+    // callback
+    const imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
+    completionCallback(imageData);
   }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   scaleCanvasWithAlgorithm(canvas, scale) {
-    var scaledCanvas = this.createCanvas(canvas.width * scale, canvas.height * scale);
-
-    var srcImgData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-    var destImgData = scaledCanvas.getContext('2d').createImageData(scaledCanvas.width, scaledCanvas.height);
+    const scaledCanvas = this.createCanvas(canvas.width * scale, canvas.height * scale);
+    const srcImgData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+    const destImgData = scaledCanvas.getContext('2d').createImageData(scaledCanvas.width, scaledCanvas.height);
 
     this.applyBilinearInterpolation(srcImgData, destImgData, scale);
-
     scaledCanvas.getContext('2d').putImageData(destImgData, 0, 0);
-
     return scaledCanvas;
   }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   getHalfScaleCanvas(canvas) {
-    var halfCanvas = this.createCanvas(canvas.width / 2, canvas.height / 2);
+    const halfCanvas = this.createCanvas(canvas.width / 2, canvas.height / 2);
     halfCanvas.getContext('2d').drawImage(canvas, 0, 0, halfCanvas.width, halfCanvas.height);
     return halfCanvas;
   }
@@ -144,21 +140,20 @@ export class Resizer {
   // TODO: move to WebWorker ?
   applyBilinearInterpolation(srcCanvasData, destCanvasData, scale) {
     function inner(f00, f10, f01, f11, x, y) {
-      var un_x = 1.0 - x;
-      var un_y = 1.0 - y;
+      let un_x = 1.0 - x;
+      let un_y = 1.0 - y;
       return (f00 * un_x * un_y + f10 * x * un_y + f01 * un_x * y + f11 * x * y);
     }
-    var i, j;
-    var iyv, iy0, iy1, ixv, ix0, ix1;
-    var idxD, idxS00, idxS10, idxS01, idxS11;
-    var dx, dy;
-    var r, g, b, a;
-    for (i = 0; i < destCanvasData.height; ++i) {
+    let iyv, iy0, iy1, ixv, ix0, ix1;
+    let idxD, idxS00, idxS10, idxS01, idxS11;
+    let dx, dy;
+    let r, g, b, a;
+    for (let i = 0; i < destCanvasData.height; ++i) {
       iyv = i / scale;
       iy0 = Math.floor(iyv);
       // Math.ceil can go over bounds
       iy1 = (Math.ceil(iyv) > (srcCanvasData.height - 1) ? (srcCanvasData.height - 1) : Math.ceil(iyv));
-      for (j = 0; j < destCanvasData.width; ++j) {
+      for (let j = 0; j < destCanvasData.width; ++j) {
         ixv = j / scale;
         ix0 = Math.floor(ixv);
         // Math.ceil can go over bounds
