@@ -31,6 +31,8 @@ export function getMockImage(width = 640, height = 480) {
   let dataUri = canvas.toDataURL(); // produces a PNG file
 
   let image = new Image();
+  image.width = width;
+  image.height = height;
   image.src = dataUri;
   return image;
 }
