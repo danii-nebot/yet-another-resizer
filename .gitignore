@@ -16,7 +16,8 @@
 .atomignore
 
 # ts
-/typings
+/typings/**
+!/typings/custom
 
 # System Files
 .DS_Store
