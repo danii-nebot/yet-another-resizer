@@ -14,8 +14,9 @@
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": true,
     "allowUnreachableCode": false,
-    "outDir": "./dist/",
-    "rootDir": "./src/"
+    "outDir": "dist/",
+    "rootDir": "src/",
+    "watch": true
   },
   "filesGlob": [
     "**/*.ts",
@@ -32,7 +33,7 @@
     "typings/browser.d.ts"
   ],
   "compileOnSave": true,
-  "buildOnSave": false,
+  "buildOnSave": true,
   "atom": {
     "rewriteTsconfig": false,
     "formatOnSave": true
