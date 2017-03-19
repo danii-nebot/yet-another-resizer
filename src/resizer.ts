@@ -6,6 +6,7 @@ https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
 https://gist.github.com/dcollien/312bce1270a5f511bf4a
 https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
 ***************************************************************************** */
+import * as Promise from 'bluebird';
 
 export class Resizer {
   // test config object
@@ -38,24 +39,13 @@ export class Resizer {
   }
 
   // quick & dirty thumbnail cut preview
-  getThumbFromImage(img, imgType = 'image/png', completionCallback: Function = null): any {
+  getThumbFromImage(img, imgType = 'image/png'): Promise<any> {
     if (!this.config.thumbSize) {
-      // something is wrong
-      console.warn(`Error on resizer.ts getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`);
-      if (completionCallback) {
-        completionCallback();
-      }
-      return;
+      return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`))
     }
-
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
-
-    if (this.config.test || !completionCallback) {
-      return canvas;
-    }
-
-    let imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
-    completionCallback(imageData);
+    let imageData:any = canvas.toDataURL(`${imgType}`, this.config.quality);
+    return Promise.resolve(imageData);
   }
 
   scaleAndCropThumb(img, thumbSize) {
@@ -76,7 +66,7 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleImage(img, imgType = 'image/png', completionCallback: Function = null): any {
+  scaleImage(img, imgType = 'image/png'): any {
     let boxWidth = this.config.maxWidth || 0,
       boxHeight = this.config.maxHeight || 0,
       snapToWidth = false,
@@ -85,12 +75,7 @@ export class Resizer {
     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
 
     if (!boxWidth && !boxHeight) {
-      // something is wrong
-      console.warn(`Error on resizer.ts scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`);
-      if (completionCallback) {
-        completionCallback();
-      }
-      return;
+      return Promise.reject(new Error(`Error: scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`));
     }
 
     let scale = 1;
@@ -118,12 +103,8 @@ export class Resizer {
       canvas = this.scaleCanvasWithAlgorithm(canvas, scale);
     }
 
-    if (this.config.test || !completionCallback) {
-      return canvas;
-    }
-    // callback
     const imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
-    completionCallback(imageData);
+    return Promise.resolve(imageData);
   }
 
   // source:
