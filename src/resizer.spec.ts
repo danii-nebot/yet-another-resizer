@@ -29,10 +29,13 @@ describe("test Resizer object creation", () => {
 describe("test image resize algorithms", () => {
   var resizer: Resizer;
 
+  beforeAll(() => {
+    jasmine.addMatchers(customMatchers);
+  });
+
   beforeEach(() => {
     // tests are not async
     resizer = new Resizer({ test: true });
-    jasmine.addMatchers(customMatchers);
   });
 
   it("should correctly resize a battery of square images", (done) => {
