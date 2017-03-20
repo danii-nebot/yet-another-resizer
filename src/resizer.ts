@@ -38,13 +38,29 @@ export class Resizer {
     return canvas;
   }
 
+  getImageType(img):string {
+    if (img && img.src && img.src.split) {
+      const data = img.src.split(';')[0];
+      if (data && data.length > 3 && data.split) {
+        return data.split(':')[1];
+      }
+    }
+  }
+
   // quick & dirty thumbnail cut preview
-  getThumbFromImage(img, imgType = 'image/png'): Promise<any> {
+  getThumbFromImage(img): Promise<any> {
     if (!this.config.thumbSize) {
       return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`))
     }
+
+    const imgType:string = this.getImageType(img);
+
+    if (!imgType) {
+      return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
+    }
+
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
-    let imageData:any = canvas.toDataURL(`${imgType}`, this.config.quality);
+    let imageData:any = canvas.toDataURL(imgType, this.config.quality);
     return Promise.resolve(imageData);
   }
 
@@ -59,14 +75,14 @@ export class Resizer {
       posx, posy,   // start from the top and left coords,
       cropSize, cropSize,   // get a square area from the source image (crop),
       0, 0,     // place the result at 0, 0 in the target canvas,
-      thumbSize, thumbSize); // with as width / height (scale)
+      thumbSize, thumbSize); // with as width / height
 
     return thumbCanvas;
   }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleImage(img, imgType = 'image/png'): any {
+  scaleImage(img): any {
     let boxWidth = this.config.maxWidth || 0,
       boxHeight = this.config.maxHeight || 0,
       snapToWidth = false,
@@ -76,6 +92,12 @@ export class Resizer {
 
     if (!boxWidth && !boxHeight) {
       return Promise.reject(new Error(`Error: scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`));
+    }
+
+    const imgType: string = this.getImageType(img);
+
+    if (!imgType) {
+      return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
     }
 
     let scale = 1;
