@@ -1,4 +1,7 @@
 demo
+dist/testUtils
+gulpfile.js
+karma.conf.js
 .atomignore
 node_modules
 tests
@@ -6,7 +9,10 @@ typings
 tsconfig.json
 typings.json
 *.ts
-!*.d.ts
 .npmignore
-*.test.js
-*.test.d.ts
+*.log
+*.tgz
+.config
+dist/*.spec.js
+dist/*.spec.d.ts
+

@@ -1,8 +1,8 @@
 {
-  "name": "resizer",
+  "name": "yet-another-resizer",
   "version": "0.0.1",
   "author": "Danii Nebot <daniign@gmail.com>",
-  "description": "TypeScript implementation of client size image resizing and previewing before upload",
+  "description": "Yet another implementation of client size image resizing before upload",
   "main": "index.js",
   "scripts": {
     "test": "karma start --watch dist/"
