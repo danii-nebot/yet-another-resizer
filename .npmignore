@@ -13,6 +13,7 @@ typings.json
 *.log
 *.tgz
 .config
+!*.d.ts
 dist/*.spec.js
 dist/*.spec.d.ts
 .vscode
