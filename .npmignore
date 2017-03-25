@@ -17,4 +17,5 @@ typings.json
 dist/*.spec.js
 dist/*.spec.d.ts
 .vscode
+package
 
