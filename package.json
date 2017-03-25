@@ -1,9 +1,9 @@
 {
   "name": "yet-another-resizer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Danii Nebot <daniign@gmail.com>",
   "description": "Yet another implementation of client size image resizing before upload",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "karma start --watch dist/"
   },
