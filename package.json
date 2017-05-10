@@ -1,6 +1,6 @@
 {
   "name": "yet-another-resizer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Danii Nebot <daniign@gmail.com>",
   "description": "Yet another implementation of client size image resizing before upload",
   "main": "dist/index.js",

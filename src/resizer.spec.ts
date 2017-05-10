@@ -1,6 +1,6 @@
 import * as Promise from 'bluebird';
 import { Resizer } from './resizer';
-import { getMockImage } from './testUtils/mock';
+import { getMockImage, randomIntFromInterval } from './testUtils';
 import { customMatchers } from './testUtils/customMatchers';
 
 describe("test Resizer object creation", () => {
@@ -41,7 +41,7 @@ describe("test image resize algorithms", () => {
   it("should correctly resize a battery of square images", (done) => {
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 10; i++) {
-      let size = Math.floor((Math.random() + 1) * 15) * 100;
+      let size = randomIntFromInterval(500, 750);
       let mock = getMockImage(size, size);
       let img = new Image();
 
@@ -59,10 +59,31 @@ describe("test image resize algorithms", () => {
     .then(done)
   });
 
+  it("should never scale up when resizing any images", (done) => {
+    let ps: Array<Promise<any>> = [];
+    for (let i = 0; i < 10; i++) {
+      let size = randomIntFromInterval(50, 100);
+      let mock = getMockImage(size, size);
+      let img = new Image();
+
+      let p: Promise<any> = resizer.scaleImage(mock)
+        .then((resized) => {
+          img.src = resized;
+          img.onload = Promise.resolve
+        })
+        .then(() => {
+          expect(img.width).toBe(size);
+          expect(img.height).toBe(size);
+        });
+    }
+    Promise.all(ps)
+      .then(done)
+  });
+
   it("should correctly resize a battery of landscape images to fixed width", (done) => {
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
-      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width - (i + 1) * 25);
       let scale = mock.width / mock.height;
       let img = new Image();
@@ -75,7 +96,7 @@ describe("test image resize algorithms", () => {
       .then(() => {
         expect(img.width).toBe(300);
         // javascript floating point precision might be messing this up...
-        expect(img.height).toBeWithinDelta(300 / scale, 1);
+        expect(img.height).toBeWithinDelta(300 / scale, 2);
       });
     }
     Promise.all(ps)
@@ -89,7 +110,7 @@ describe("test image resize algorithms", () => {
     };
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
-      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width - (i + 1) * 25);
       let scale = mock.width / mock.height;
       let img = new Image();
@@ -102,7 +123,7 @@ describe("test image resize algorithms", () => {
       .then(() => {
         expect(img.height).toBe(300);
         // javascript floating point precision might be messing this up...
-        expect(img.width).toBeWithinDelta(300 * scale, 1);
+        expect(img.width).toBeWithinDelta(300 * scale, 2);
       });
     }
     Promise.all(ps)
@@ -112,7 +133,7 @@ describe("test image resize algorithms", () => {
   it("should correctly resize a battery of portrait images to fixed width", (done) => {
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
-      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width + (i + 1) * 25);
       let scale = mock.width / mock.height;
       let img = new Image();
@@ -125,7 +146,7 @@ describe("test image resize algorithms", () => {
       .then(() => {
         expect(img.width).toBe(300);
         // javascript floating point precision might be messing this up...
-        expect(img.height).toBeWithinDelta(300 / scale, 1);
+        expect(img.height).toBeWithinDelta(300 / scale, 2);
       });
     }
     Promise.all(ps)
@@ -139,7 +160,7 @@ describe("test image resize algorithms", () => {
     };
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
-      let width = Math.floor((Math.random() + 1) * 15) * 20;
+      let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width + (i + 1) * 25);
       let scale = mock.width / mock.height;
       let img = new Image();
@@ -152,7 +173,7 @@ describe("test image resize algorithms", () => {
       .then(() => {
         expect(img.height).toBe(300);
         // javascript floating point precision might be messing this up...
-        expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 1);
+        expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
       });
       ps.push(p);
     }
@@ -168,8 +189,8 @@ describe("test image resize algorithms", () => {
 
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
-      let width = Math.floor((Math.random() + 1) * 15) * 20;
-      let height = Math.floor((Math.random() + 1) * 15) * 20;
+      let width = randomIntFromInterval(500, 750);
+      let height = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, height);
       let scale = mock.width / mock.height;
       let img = new Image();
@@ -182,10 +203,10 @@ describe("test image resize algorithms", () => {
       .then(() => {
         if (scale >= 1) {
           expect(img.width).toBe(300);
-          expect(img.height).toBeWithinDelta(Math.floor(300 / scale), 1);
+          expect(img.height).toBeWithinDelta(Math.floor(300 / scale), 2);
         } else {
           expect(img.height).toBe(300);
-          expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 1);
+          expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
         }
       });
       ps.push(p)
@@ -197,8 +218,8 @@ describe("test image resize algorithms", () => {
   it("should correctly create thumbs from a battery of images of different sizes", (done) => {
     let ps:Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
-      let width = Math.floor((Math.random() + 1) * 15) * 20;
-      let height = Math.floor((Math.random() + 1) * 15) * 20;
+      let width = randomIntFromInterval(500, 750);
+      let height = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, height);
       let img = new Image();
 
