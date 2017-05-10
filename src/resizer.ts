@@ -121,7 +121,7 @@ export class Resizer {
       scale = boxHeight / canvas.height;
     }
 
-    if (scale !== 1) {
+    if (scale < 1) {
       canvas = this.scaleCanvasWithAlgorithm(canvas, scale);
     }
 
