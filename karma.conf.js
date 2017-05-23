@@ -2,7 +2,7 @@
 // https://karma-runner.github.io/0.13/config/configuration-file.html
 
 module.exports = function (config) {
-  config.set({
+  const configuration = {
     basePath: '.',
     frameworks: ['browserify', 'jasmine'],
     plugins: [
@@ -37,5 +37,16 @@ module.exports = function (config) {
       debug: true,
       // transform: [ 'brfs', 'browserify-shim' ]
     }
-  });
+  };
+
+  // CI
+  if (process.env.TRAVIS) {
+    configuration.singleRun = true;
+    configuration.browsers = ['Chrome_travis_ci'];
+    configuration.reporters = ['spec', 'coverage'];
+  }
+
+  config.set(configuration);
+
+
 };

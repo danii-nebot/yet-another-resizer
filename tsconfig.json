@@ -16,7 +16,7 @@
     "allowUnreachableCode": false,
     "outDir": "dist/",
     "rootDir": "src/",
-    "watch": true
+    "watch": false
   },
   "filesGlob": [
     "**/*.ts",

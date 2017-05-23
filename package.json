@@ -1,12 +1,14 @@
 {
   "name": "yet-another-resizer",
-  "version": "0.0.5-development",
+  "version": "0.0.0-semantically-released",
   "author": "Danii Nebot <daniign@gmail.com>",
   "description": "Yet another implementation of client size image resizing before upload",
   "main": "dist/index.js",
   "scripts": {
     "commit": "git-cz",
     "test": "karma start --watch dist/",
+    "build": "tsc",
+    "postbuild": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "license": "ISC",
