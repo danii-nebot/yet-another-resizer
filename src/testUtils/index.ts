@@ -1,5 +1,5 @@
 // http://stackoverflow.com/questions/22823752/creating-image-from-array-in-javascript-and-html5
-export function getMockImage(width = 640, height = 480) {
+export function getMockImage(width = 640, height = 480):HTMLImageElement {
 
   let buffer = new Uint8ClampedArray(width * height * 4); // have enough bytes
 

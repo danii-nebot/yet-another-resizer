@@ -3,20 +3,19 @@ import { Resizer } from './resizer';
 import { getMockImage, randomIntFromInterval } from './testUtils';
 import { customMatchers } from './testUtils/customMatchers';
 
-describe("test Resizer object creation", () => {
+describe('test Resizer object creation', () => {
   var resizer: Resizer;
 
   beforeEach(() => {
-    // tests are not async
-    resizer = new Resizer({ test: true });
+    resizer = new Resizer();
   });
 
-  it("should correctly instantiate the object", () => {
+  it('should correctly instantiate the object', () => {
     expect(resizer).toBeTruthy();
     expect(resizer.config).toBeDefined();
   });
 
-  it("should correctly assign config objects", () => {
+  it('should correctly assign config objects', () => {
     let configQualityDefault = resizer.config.quality;
     resizer.config = { test: 'test', maxWidth: 'test' };
     expect(resizer.config.test).toBe('test');
@@ -26,7 +25,7 @@ describe("test Resizer object creation", () => {
   });
 });
 
-describe("test image resize algorithms", () => {
+describe('test image resize algorithms', () => {
   var resizer: Resizer;
 
   beforeAll(() => {
@@ -34,11 +33,10 @@ describe("test image resize algorithms", () => {
   });
 
   beforeEach(() => {
-    // tests are not async
-    resizer = new Resizer({ test: true });
+    resizer = new Resizer();
   });
 
-  it("should correctly resize a battery of square images", (done) => {
+  it('should correctly resize a battery of square images', (done) => {
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 10; i++) {
       let size = randomIntFromInterval(500, 750);
@@ -59,7 +57,7 @@ describe("test image resize algorithms", () => {
     .then(done)
   });
 
-  it("should never scale up when resizing any images", (done) => {
+  it('should never scale up when resizing any images', (done) => {
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 10; i++) {
       let size = randomIntFromInterval(50, 100);
@@ -80,7 +78,7 @@ describe("test image resize algorithms", () => {
       .then(done)
   });
 
-  it("should correctly resize a battery of landscape images to fixed width", (done) => {
+  it('should correctly resize a battery of landscape images to fixed width', (done) => {
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
       let width = randomIntFromInterval(500, 750);
@@ -103,7 +101,7 @@ describe("test image resize algorithms", () => {
     .then(done)
   });
 
-  it("should correctly resize a battery of landscape images to fixed height", (done) => {
+  it('should correctly resize a battery of landscape images to fixed height', (done) => {
     resizer.config = {
       maxWidth: 0,
       maxHeight: 300
@@ -130,7 +128,7 @@ describe("test image resize algorithms", () => {
     .then(done);
   });
 
-  it("should correctly resize a battery of portrait images to fixed width", (done) => {
+  it('should correctly resize a battery of portrait images to fixed width', (done) => {
     let ps: Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
       let width = randomIntFromInterval(500, 750);
@@ -153,7 +151,7 @@ describe("test image resize algorithms", () => {
     .then(done);
   });
 
-  it("should correctly resize a battery of portrait images to fixed height", (done) => {
+  it('should correctly resize a battery of portrait images to fixed height', (done) => {
     resizer.config = {
       maxWidth: 0,
       maxHeight: 300
@@ -181,7 +179,7 @@ describe("test image resize algorithms", () => {
     .then(done)
   });
 
-  it("should correctly create resize a battery of images of different sizes into a box", (done) => {
+  it('should correctly create resize a battery of images of different sizes into a box', (done) => {
     resizer.config = {
       maxWidth: 300,
       maxHeight: 300
@@ -215,7 +213,7 @@ describe("test image resize algorithms", () => {
     .then(done)
   });
 
-  it("should correctly create thumbs from a battery of images of different sizes", (done) => {
+  it('should correctly create thumbs from a battery of images of different sizes', (done) => {
     let ps:Array<Promise<any>> = [];
     for (let i = 0; i < 5; i++) {
       let width = randomIntFromInterval(500, 750);
@@ -237,4 +235,37 @@ describe("test image resize algorithms", () => {
     Promise.all(ps)
     .then(done)
   });
+
+  it('should correctly resize from a battery of images parsed with `DomParser` `parseFromString`', (done) => {
+    resizer.config = {
+      maxWidth: 300
+    }
+    const ps:Array<Promise<any>> = [];
+    const parser:DOMParser = new DOMParser();
+    let htmlText = 'div'
+    for (let i = 0; i < 3; i++) {
+      let width = randomIntFromInterval(500, 750);
+      let height = randomIntFromInterval(500, 750);
+      const mock:HTMLImageElement = getMockImage(width, height);
+      htmlText += `<img src="${mock.src}"></img>`
+    }
+    htmlText += '</div>'
+
+    const dom:Document = parser.parseFromString(htmlText, 'text/html')
+    const imgs:any = dom.querySelectorAll('img');
+    imgs.forEach(img => {
+      let resized = new Image()
+      let p:Promise<any> = resizer.scaleImage(img)
+      .then(data => {
+        resized.src = data;
+        resized.onload = Promise.resolve
+      })
+      .then(() => {
+        expect(resized.width).toBe(300);
+      })
+      ps.push(p)
+    })
+    Promise.all(ps)
+    .then(done)
+  })
 });

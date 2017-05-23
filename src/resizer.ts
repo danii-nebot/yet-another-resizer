@@ -9,7 +9,6 @@ https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js
 import * as Promise from 'bluebird';
 
 export class Resizer {
-  // test config object
   // if only maxWidth or maxHeight are present, limit that property
   // if both, fit to box size
   // private property with getter/setter prefixed with "_": https://github.com/angular/angular.io/issues/1108
@@ -31,8 +30,8 @@ export class Resizer {
     (<any>Object).assign(this._config, configParam);
   }
 
-  createCanvas(width, height) {
-    let canvas = document.createElement('canvas');
+  createCanvas(width, height):HTMLCanvasElement {
+    let canvas:HTMLCanvasElement = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     return canvas;
@@ -48,7 +47,7 @@ export class Resizer {
   }
 
   // quick & dirty thumbnail cut preview
-  getThumbFromImage(img): Promise<any> {
+  getThumbFromImage(img:HTMLImageElement): Promise<any> {
     if (!this.config.thumbSize) {
       return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`))
     }
@@ -82,51 +81,68 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleImage(img): any {
-    let boxWidth = this.config.maxWidth || 0,
-      boxHeight = this.config.maxHeight || 0,
-      snapToWidth = false,
-      canvas = this.createCanvas(img.width, img.height);
-
-    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-
-    if (!boxWidth && !boxHeight) {
-      return Promise.reject(new Error(`Error: scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`));
-    }
-
-    const imgType: string = this.getImageType(img);
-
-    if (!imgType) {
-      return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
-    }
-
-    let scale = 1;
-
-    if (boxWidth && boxHeight) {
-      // adjust to box
-      snapToWidth = (canvas.width >= canvas.height);
-    } else {
-      snapToWidth = !!this.config.maxWidth;
-    }
-
-    if (snapToWidth) {
-      while (canvas.width >= (2 * boxWidth)) {
-        canvas = this.getHalfScaleCanvas(canvas);
+  scaleImage(_img:HTMLImageElement): Promise<any> {
+    let img = _img
+    return new Promise<any>((resolve, reject) => {
+       if (!img.width || !img.height) { // might need for img to load
+         img = new Image()
+         img.src = _img.src
+         img.onload = resolve
+       } else {
+         return resolve()
+       }
+    })
+    .then(() => {
+      if (!img.width || !img.height) {
+        return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
       }
-      scale = boxWidth / canvas.width;
-    } else { // snap to height
-      while (canvas.height >= (2 * boxHeight)) {
-        canvas = this.getHalfScaleCanvas(canvas);
+
+      let boxWidth = this.config.maxWidth || 0,
+        boxHeight = this.config.maxHeight || 0;
+
+      if (!boxWidth && !boxHeight) {
+        return Promise.reject(new Error(`Error: scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`));
       }
-      scale = boxHeight / canvas.height;
-    }
 
-    if (scale < 1) {
-      canvas = this.scaleCanvasWithAlgorithm(canvas, scale);
-    }
+      let snapToWidth = false,
+        canvas = this.createCanvas(img.width, img.height);
 
-    const imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
-    return Promise.resolve(imageData);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const imgType: string = this.getImageType(img);
+
+      if (!imgType) {
+        return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
+      }
+
+      let scale = 1;
+
+      if (boxWidth && boxHeight) {
+        // adjust to box
+        snapToWidth = (canvas.width >= canvas.height);
+      } else {
+        snapToWidth = !!this.config.maxWidth;
+      }
+
+      if (snapToWidth) {
+        while (canvas.width >= (2 * boxWidth)) {
+          canvas = this.getHalfScaleCanvas(canvas);
+        }
+        scale = boxWidth / canvas.width;
+      } else { // snap to height
+        while (canvas.height >= (2 * boxHeight)) {
+          canvas = this.getHalfScaleCanvas(canvas);
+        }
+        scale = boxHeight / canvas.height;
+      }
+
+      if (scale < 1) {
+        canvas = this.scaleCanvasWithAlgorithm(canvas, scale);
+      }
+
+      const imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
+      return Promise.resolve(imageData);
+    })
   }
 
   // source:
