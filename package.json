@@ -10,7 +10,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git://github.com/danii-nebot/resizer.git"
+    "url": "https://github.com/danii-nebot/yet-another-resizer.git"
   },
   "dependencies": {
     "bluebird": "^3.5.0"
