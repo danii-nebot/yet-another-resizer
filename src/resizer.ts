@@ -27,7 +27,7 @@ export class Resizer {
   }
 
   set config(configParam: any) {
-    (<any>Object).assign(this._config, configParam);
+    this._config = {...this._config, ...configParam};
   }
 
   createCanvas(width, height):HTMLCanvasElement {
