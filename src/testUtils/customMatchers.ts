@@ -2,7 +2,7 @@
 export const customMatchers: any = {
   toBeWithinDelta: (util, customEqualityTesters) => {
     return {
-      compare: (actual, expected, delta) => {
+      compare: (actual, expected, delta = 0) => {
         return {
           pass: Math.abs(actual - expected) <= delta,
           message: `Expected ${actual} to be within ${expected} ± ${delta}`

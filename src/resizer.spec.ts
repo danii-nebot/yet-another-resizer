@@ -92,7 +92,7 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.width).toBe(300);
+        expect(img.width).toBeWithinDelta(300, 1);
         // javascript floating point precision might be messing this up...
         expect(img.height).toBeWithinDelta(300 / scale, 2);
       });
@@ -119,7 +119,7 @@ describe('test image resize algorithms', () => {
           img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.height).toBe(300);
+        expect(img.height).toBeWithinDelta(300, 1);
         // javascript floating point precision might be messing this up...
         expect(img.width).toBeWithinDelta(300 * scale, 2);
       });
@@ -142,7 +142,7 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.width).toBe(300);
+        expect(img.width).toBeWithinDelta(300, 1);
         // javascript floating point precision might be messing this up...
         expect(img.height).toBeWithinDelta(300 / scale, 2);
       });
@@ -169,7 +169,7 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.height).toBe(300);
+        expect(img.height).toBeWithinDelta(300, 1);
         // javascript floating point precision might be messing this up...
         expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
       });
@@ -200,10 +200,10 @@ describe('test image resize algorithms', () => {
       })
       .then(() => {
         if (scale >= 1) {
-          expect(img.width).toBe(300);
+          expect(img.width).toBeWithinDelta(300, 1);
           expect(img.height).toBeWithinDelta(Math.floor(300 / scale), 2);
         } else {
-          expect(img.height).toBe(300);
+          expect(img.height).toBeWithinDelta(300, 1);
           expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
         }
       });
@@ -261,7 +261,7 @@ describe('test image resize algorithms', () => {
         resized.onload = Promise.resolve
       })
       .then(() => {
-        expect(resized.width).toBe(300);
+        expect(resized.width).toBeWithinDelta(300, 1);
       })
       ps.push(p)
     })
