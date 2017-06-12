@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "commit": "git-cz",
-    "test": "karma start --watch dist/",
+    "test": "karma start --single-run",
     "build": "tsc",
     "postbuild": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
