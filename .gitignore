@@ -1,6 +1,6 @@
 # compiled output
 /dist
-/demo/js
+/demo
 
 # npm
 *.tgz
