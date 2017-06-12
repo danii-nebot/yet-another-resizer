@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "commit": "git-cz",
-    "test": "karma start --watch dist/",
+    "test": "karma start --single-run",
     "build": "tsc",
     "postbuild": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
@@ -28,7 +28,7 @@
     "jasmine-core": "2.4.1",
     "karma": "^1.2.0",
     "karma-browserify": "^5.1.0",
-    "karma-chrome-launcher": "^2.0.0",
+    "karma-chrome-launcher": "^2.1.1",
     "karma-jasmine": "^1.0.2",
     "requirejs": "^2.2.0",
     "semantic-release": "^6.3.6",

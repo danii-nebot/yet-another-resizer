@@ -3,6 +3,8 @@ import { Resizer } from './resizer';
 import { getMockImage, randomIntFromInterval } from './testUtils';
 import { customMatchers } from './testUtils/customMatchers';
 
+const TEST_RUNS = 10;
+
 describe('test Resizer object creation', () => {
   var resizer: Resizer;
 
@@ -38,7 +40,7 @@ describe('test image resize algorithms', () => {
 
   it('should correctly resize a battery of square images', (done) => {
     let ps: Array<Promise<any>> = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let size = randomIntFromInterval(500, 750);
       let mock = getMockImage(size, size);
       let img = new Image();
@@ -49,8 +51,10 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.width).toBe(300);
-        expect(img.height).toBe(300);
+        setTimeout(() => {
+          expect(img.width).toBe(300);
+          expect(img.height).toBe(300);
+        }, 0);
       });
     }
     Promise.all(ps)
@@ -59,7 +63,7 @@ describe('test image resize algorithms', () => {
 
   it('should never scale up when resizing any images', (done) => {
     let ps: Array<Promise<any>> = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let size = randomIntFromInterval(50, 100);
       let mock = getMockImage(size, size);
       let img = new Image();
@@ -70,8 +74,10 @@ describe('test image resize algorithms', () => {
           img.onload = Promise.resolve
         })
         .then(() => {
-          expect(img.width).toBe(size);
-          expect(img.height).toBe(size);
+          setTimeout(() => {
+            expect(img.width).toBe(size);
+            expect(img.height).toBe(size);
+          }, 0);
         });
     }
     Promise.all(ps)
@@ -80,7 +86,7 @@ describe('test image resize algorithms', () => {
 
   it('should correctly resize a battery of landscape images to fixed width', (done) => {
     let ps: Array<Promise<any>> = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width - (i + 1) * 25);
       let scale = mock.width / mock.height;
@@ -92,9 +98,11 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.width).toBeWithinDelta(300, 1);
-        // javascript floating point precision might be messing this up...
-        expect(img.height).toBeWithinDelta(300 / scale, 2);
+        setTimeout(() => {
+          expect(img.width).toBeWithinDelta(300, 1);
+          // javascript floating point precision might be messing this up...
+          expect(img.height).toBeWithinDelta(300 / scale, 2);
+        }, 0);
       });
     }
     Promise.all(ps)
@@ -107,7 +115,7 @@ describe('test image resize algorithms', () => {
       maxHeight: 300
     };
     let ps: Array<Promise<any>> = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width - (i + 1) * 25);
       let scale = mock.width / mock.height;
@@ -119,9 +127,11 @@ describe('test image resize algorithms', () => {
           img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.height).toBeWithinDelta(300, 1);
-        // javascript floating point precision might be messing this up...
-        expect(img.width).toBeWithinDelta(300 * scale, 2);
+        setTimeout(() => {
+          expect(img.height).toBeWithinDelta(300, 1);
+          // javascript floating point precision might be messing this up...
+          expect(img.width).toBeWithinDelta(300 * scale, 2);
+        }, 0);
       });
     }
     Promise.all(ps)
@@ -130,7 +140,7 @@ describe('test image resize algorithms', () => {
 
   it('should correctly resize a battery of portrait images to fixed width', (done) => {
     let ps: Array<Promise<any>> = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width + (i + 1) * 25);
       let scale = mock.width / mock.height;
@@ -142,9 +152,11 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.width).toBeWithinDelta(300, 1);
-        // javascript floating point precision might be messing this up...
-        expect(img.height).toBeWithinDelta(300 / scale, 2);
+        setTimeout(() => {
+          expect(img.width).toBeWithinDelta(300, 1);
+          // javascript floating point precision might be messing this up...
+          expect(img.height).toBeWithinDelta(300 / scale, 2);
+        }, 0);
       });
     }
     Promise.all(ps)
@@ -157,7 +169,7 @@ describe('test image resize algorithms', () => {
       maxHeight: 300
     };
     let ps: Array<Promise<any>> = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let width = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, width + (i + 1) * 25);
       let scale = mock.width / mock.height;
@@ -169,9 +181,11 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.height).toBeWithinDelta(300, 1);
-        // javascript floating point precision might be messing this up...
-        expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
+        setTimeout(() => {
+          expect(img.height).toBeWithinDelta(300, 1);
+          // javascript floating point precision might be messing this up...
+          expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
+        }, 0);
       });
       ps.push(p);
     }
@@ -179,14 +193,14 @@ describe('test image resize algorithms', () => {
     .then(done)
   });
 
-  it('should correctly create resize a battery of images of different sizes into a box', (done) => {
+  it('should correctly resize a battery of images of different sizes into a box', (done) => {
     resizer.config = {
       maxWidth: 300,
       maxHeight: 300
     };
 
     let ps: Array<Promise<any>> = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let width = randomIntFromInterval(500, 750);
       let height = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, height);
@@ -199,13 +213,15 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        if (scale >= 1) {
-          expect(img.width).toBeWithinDelta(300, 1);
-          expect(img.height).toBeWithinDelta(Math.floor(300 / scale), 2);
-        } else {
-          expect(img.height).toBeWithinDelta(300, 1);
-          expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
-        }
+        setTimeout(() => {
+          if (scale >= 1) {
+            expect(img.width).toBeWithinDelta(300, 1);
+            expect(img.height).toBeWithinDelta(Math.floor(300 / scale), 2);
+          } else {
+            expect(img.height).toBeWithinDelta(300, 1);
+            expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
+          }
+        }, 0);
       });
       ps.push(p)
     }
@@ -215,7 +231,7 @@ describe('test image resize algorithms', () => {
 
   it('should correctly create thumbs from a battery of images of different sizes', (done) => {
     let ps:Array<Promise<any>> = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < TEST_RUNS; i++) {
       let width = randomIntFromInterval(500, 750);
       let height = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, height);
@@ -227,8 +243,10 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve
       })
       .then(() => {
-        expect(img.width).toBe(50);
-        expect(img.height).toBe(50);
+        setTimeout(() => {
+          expect(img.width).toBe(50);
+          expect(img.height).toBe(50);
+        }, 0);
       })
       ps.push(p)
     }
@@ -261,7 +279,9 @@ describe('test image resize algorithms', () => {
         resized.onload = Promise.resolve
       })
       .then(() => {
-        expect(resized.width).toBeWithinDelta(300, 1);
+        setTimeout(() => {
+          expect(resized.width).toBeWithinDelta(300, 1);
+        }, 0);
       })
       ps.push(p)
     })
