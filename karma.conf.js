@@ -10,13 +10,6 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-browserify')
     ],
-    customLaunchers: {
-      // chrome setup for travis CI using chromium
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox', '--headless']
-      }
-    },
     files: [
       { pattern: 'dist/*.spec.js', included: true, watched: true }
     ],
@@ -30,7 +23,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: ['ChromeHeadless'],
     singleRun: false,
     // browserify configuration
     browserify: {
@@ -38,18 +31,6 @@ module.exports = function (config) {
       // transform: [ 'brfs', 'browserify-shim' ]
     }
   };
-
-  // CI
-  if (process.env.TRAVIS) {
-    configuration.singleRun = true;
-    configuration.browsers = ['Chrome_travis_ci'];
-    configuration.customLaunchers = {
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
-      }
-    };
-  }
 
   config.set(configuration);
 };
