@@ -1,15 +1,16 @@
 ## Yet Another Resizer
----
 
 Yet another implementation of client size image resizing before upload, this time in TypeScript
 
 ---
-
-Github repo:
-https://github.com/danii-nebot/resizer
-
+[![Build Status](https://api.travis-ci.org/danii-nebot/yet-another-resizer.png?branch=master)](https://travis-ci.org/joanllenas/ngx-date-fns)
+[![npm version](https://badge.fury.io/js/yet-another-resizer.svg)](https://badge.fury.io/js/yet-another-resizer)
 ---
 
+WIP
+(Docs are WIP too)
+
+---
 References:
 
 https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
