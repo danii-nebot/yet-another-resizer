@@ -4,32 +4,24 @@
 module.exports = function (config) {
   const configuration = {
     basePath: '.',
-    frameworks: ['browserify', 'jasmine'],
+    frameworks: ['jasmine', 'karma-typescript'],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      require('karma-browserify')
+      require('karma-typescript')
     ],
     files: [
-      { pattern: 'dist/*.spec.js', included: true, watched: true }
+      { pattern: 'src/**/*.ts', included: true, watched: true }
     ],
     exclude: [
     ],
     preprocessors: {
-      'dist/*.spec.js': [ 'browserify' ]
+      'src/**/*.ts': [ 'karma-typescript' ]
     },
-    reporters: ['progress'],
-    port: 9876,
-    colors: true,
-    logLevel: config.LOG_INFO,
+    reporters: ['progress', 'karma-typescript'],
     autoWatch: true,
     browsers: ['ChromeHeadless'],
-    singleRun: false,
-    // browserify configuration
-    browserify: {
-      debug: true,
-      // transform: [ 'brfs', 'browserify-shim' ]
-    }
+    singleRun: false
   };
 
   config.set(configuration);

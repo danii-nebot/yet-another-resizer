@@ -1,6 +1,10 @@
 # compiled output
-/dist
-/demo
+dist
+demo
+
+#test cov
+coverage
+.nyc_output
 
 # npm
 *.tgz
