@@ -1,5 +1,5 @@
 // http://stackoverflow.com/questions/22823752/creating-image-from-array-in-javascript-and-html5
-export function getMockImage(width = 640, height = 480):HTMLImageElement {
+export function getMockImage(width = 640, height = 480): HTMLImageElement {
 
   let buffer = new Uint8ClampedArray(width * height * 4); // have enough bytes
 
@@ -14,20 +14,20 @@ export function getMockImage(width = 640, height = 480):HTMLImageElement {
   }
 
   // create off-screen canvas element
-  let canvas = document.createElement('canvas'),
-    ctx = canvas.getContext('2d');
+  let canvas = document.createElement('canvas');
+  let context = canvas.getContext('2d');
 
   canvas.width = width;
   canvas.height = height;
 
   // create imageData object
-  let idata = ctx.createImageData(width, height);
+  let idata = context.createImageData(width, height);
 
   // set our buffer as source
   idata.data.set(buffer);
 
   // update canvas with new data
-  ctx.putImageData(idata, 0, 0);
+  context.putImageData(idata, 0, 0);
   let dataUri = canvas.toDataURL(); // produces a PNG file
 
   let image = new Image();
@@ -38,6 +38,6 @@ export function getMockImage(width = 640, height = 480):HTMLImageElement {
 }
 
 // http://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
-export function randomIntFromInterval(min, max) {
+export function randomIntFromInterval(min, max): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }

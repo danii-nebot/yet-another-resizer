@@ -5,7 +5,9 @@
   "description": "Yet another implementation of client size image resizing before upload",
   "main": "dist/index.js",
   "scripts": {
+    "lint": "tslint -t codeFrame 'src/**/*.ts'",
     "commit": "git-cz",
+    "precommit": "npm run lint",
     "pretest": "tsc --sourcemap",
     "test": "karma start --single-run",
     "coverage": "nyc npm test && && nyc report --reporter=text-lcov > coverage.lcov && codecov",
@@ -38,6 +40,9 @@
     "requirejs": "^2.2.0",
     "semantic-release": "^6.3.6",
     "systemjs": "^0.19.37",
+    "tslint": "^5.4.3",
+    "tslint-config-prettier": "^1.1.0",
+    "tslint-config-standard": "^6.0.1",
     "typescript": "^2.3.2",
     "watchify": "^3.7.0"
   },

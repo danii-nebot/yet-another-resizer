@@ -30,58 +30,61 @@ export class Resizer {
     this._config = {...this._config, ...configParam};
   }
 
-  createCanvas(width, height):HTMLCanvasElement {
-    let canvas:HTMLCanvasElement = document.createElement('canvas');
+  createCanvas(width: number, height: number): HTMLCanvasElement {
+    let canvas: HTMLCanvasElement = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     return canvas;
   }
 
-  getImageType(img):string {
+  getImageType(img: any): string {
     if (img && img.src && img.src.split) {
       const data = img.src.split(';')[0];
       if (data && data.length > 3 && data.split) {
         return data.split(':')[1];
       }
     }
+    return ''
   }
 
   // quick & dirty thumbnail cut preview
-  getThumbFromImage(img:HTMLImageElement): Promise<any> {
+  getThumbFromImage(img: HTMLImageElement): Promise<any> {
     if (!this.config.thumbSize) {
       return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`))
     }
 
-    const imgType:string = this.getImageType(img);
+    const imgType: string = this.getImageType(img);
 
     if (!imgType) {
       return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
     }
 
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
-    let imageData:any = canvas.toDataURL(imgType, this.config.quality);
+    let imageData: any = canvas.toDataURL(imgType, this.config.quality);
     return Promise.resolve(imageData);
   }
 
-  scaleAndCropThumb(img, thumbSize) {
-    let posx = Math.max(0, img.width - img.height) >> 1, // bitwise /2 and floor
-      posy = Math.max(0, img.height - img.width) >> 1, // bitwise /2 and floor
-      cropSize = Math.min(img.width, img.height),
-      thumbCanvas = this.createCanvas(thumbSize, thumbSize);
+  scaleAndCropThumb(img: any, thumbSize: number) {
+    const posx = Math.max(0, img.width - img.height) >> 1; // bitwise /2 and floor
+    const posy = Math.max(0, img.height - img.width) >> 1; // bitwise /2 and floor
+    const cropSize = Math.min(img.width, img.height);
+    const thumbCanvas = this.createCanvas(thumbSize, thumbSize);
 
     // TODO: scale progressively using getHalfScaleCanvas() function, if thumb quality is crap
-    thumbCanvas.getContext('2d').drawImage(img,
-      posx, posy,   // start from the top and left coords,
-      cropSize, cropSize,   // get a square area from the source image (crop),
-      0, 0,     // place the result at 0, 0 in the target canvas,
-      thumbSize, thumbSize); // with as width / height
-
+    const context: CanvasRenderingContext2D | null = thumbCanvas.getContext('2d')
+    if (context) {
+      context.drawImage(img,
+        posx, posy,   // start from the top and left coords,
+        cropSize, cropSize,   // get a square area from the source image (crop),
+        0, 0,     // place the result at 0, 0 in the target canvas,
+        thumbSize, thumbSize); // with as width / height
+    }
     return thumbCanvas;
   }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleImage(_img:HTMLImageElement): Promise<any> {
+  scaleImage(_img: HTMLImageElement): Promise<any> {
     let img = _img
     return new Promise<any>((resolve, reject) => {
        if (!img.width || !img.height) { // might need for img to load
@@ -97,17 +100,20 @@ export class Resizer {
         return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
       }
 
-      let boxWidth = this.config.maxWidth || 0,
-        boxHeight = this.config.maxHeight || 0;
+      const boxWidth = this.config.maxWidth || 0;
+      const boxHeight = this.config.maxHeight || 0;
 
       if (!boxWidth && !boxHeight) {
         return Promise.reject(new Error(`Error: scaleImage ${JSON.stringify(this.config)} does not define maxWidth and/or maxHeight`));
       }
 
-      let snapToWidth = false,
-        canvas = this.createCanvas(img.width, img.height);
+      let snapToWidth: boolean = false;
+      let canvas: HTMLCanvasElement = this.createCanvas(img.width, img.height);
 
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
+      if (context) {
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
 
       const imgType: string = this.getImageType(img);
 
@@ -147,29 +153,36 @@ export class Resizer {
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  scaleCanvasWithAlgorithm(canvas, scale) {
+  scaleCanvasWithAlgorithm(canvas: HTMLCanvasElement, scale: number) {
     const scaledCanvas = this.createCanvas(canvas.width * scale, canvas.height * scale);
-    const srcImgData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-    const destImgData = scaledCanvas.getContext('2d').createImageData(scaledCanvas.width, scaledCanvas.height);
-
-    this.applyBilinearInterpolation(srcImgData, destImgData, scale);
-    scaledCanvas.getContext('2d').putImageData(destImgData, 0, 0);
+    const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
+    const scaledContext: CanvasRenderingContext2D | null = scaledCanvas.getContext('2d')
+    if (context && scaledContext) {
+      const srcImgData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const destImgData = scaledContext.createImageData(scaledCanvas.width, scaledCanvas.height);
+      this.applyBilinearInterpolation(srcImgData, destImgData, scale);
+      scaledContext.putImageData(destImgData, 0, 0);
+    }
     return scaledCanvas;
   }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
-  getHalfScaleCanvas(canvas) {
+  getHalfScaleCanvas(canvas: HTMLCanvasElement) {
     const halfCanvas = this.createCanvas(canvas.width / 2, canvas.height / 2);
-    halfCanvas.getContext('2d').drawImage(canvas, 0, 0, halfCanvas.width, halfCanvas.height);
+    const context: CanvasRenderingContext2D | null = halfCanvas.getContext('2d')
+    if (context) {
+      context.drawImage(canvas, 0, 0, halfCanvas.width, halfCanvas.height);
+    }
     return halfCanvas;
   }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   // TODO: move to WebWorker ?
-  applyBilinearInterpolation(srcCanvasData, destCanvasData, scale) {
-    function inner(f00, f10, f01, f11, x, y) {
+  /* tslint:disable: one-variable-per-declaration variable-name */
+  applyBilinearInterpolation(srcCanvasData: any, destCanvasData: any, scale: number) {
+    function inner(f00: any, f10: any, f01: any, f11: any, x: number, y: number) {
       let un_x = 1.0 - x;
       let un_y = 1.0 - y;
       return (f00 * un_x * un_y + f10 * x * un_y + f01 * un_x * y + f11 * x * y);
@@ -212,4 +225,5 @@ export class Resizer {
       }
     }
   }
+  /* tslint:enable: one-variable-per-declaration variable-name */
 }
