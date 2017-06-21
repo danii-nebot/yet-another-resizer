@@ -3,10 +3,10 @@ module.exports = function (config) {
     basePath: '.',
     frameworks: ['browserify', 'jasmine'],
     files: [
-      { pattern: 'dist/**/*.js', included: true, watched: true }
+      { pattern: 'dist/**/*.spec.js', included: true, watched: true }
     ],
     preprocessors: {
-      'dist/**/*.js': ['browserify']
+      'dist/**/*.spec.js': ['browserify']
     },
     reporters: ['spec'],
     port: 9876,
