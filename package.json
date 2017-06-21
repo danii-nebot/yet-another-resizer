@@ -29,7 +29,6 @@
     "codecov": "^2.2.0",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
-    "gulp": "^3.9.1",
     "jasmine-core": "2.4.1",
     "karma": "^1.2.0",
     "karma-browserify": "^5.1.0",

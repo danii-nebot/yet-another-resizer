@@ -1,7 +1,6 @@
 .travis.yml
 demo
 dist/testUtils
-gulpfile.js
 karma.conf.js
 .atomignore
 node_modules
