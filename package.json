@@ -8,9 +8,7 @@
     "lint": "tslint -t codeFrame 'src/**/*.ts'",
     "commit": "git-cz",
     "precommit": "npm run lint",
-    "pretest": "tsc --sourcemap",
     "test": "karma start --single-run",
-    "coverage": "nyc npm test && && nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "build": "tsc",
     "postbuild": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
@@ -26,7 +24,6 @@
   "devDependencies": {
     "browser-sync": "^2.15.0",
     "browserify": "^13.1.0",
-    "codecov": "^2.2.0",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
     "jasmine-core": "2.4.1",
@@ -35,7 +32,6 @@
     "karma-chrome-launcher": "^2.1.1",
     "karma-jasmine": "^1.0.2",
     "karma-typescript": "^3.0.4",
-    "nyc": "^11.0.2",
     "requirejs": "^2.2.0",
     "semantic-release": "^6.3.6",
     "systemjs": "^0.19.37",

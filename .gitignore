@@ -2,10 +2,6 @@
 dist
 demo
 
-#test cov
-coverage
-.nyc_output
-
 # npm
 *.tgz
 npm-debug.log
