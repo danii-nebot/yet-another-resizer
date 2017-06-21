@@ -6,7 +6,7 @@ import { customMatchers } from './testUtils/customMatchers';
 const TEST_RUNS = 10;
 
 describe('test Resizer object creation', () => {
-  var resizer: Resizer;
+  let resizer: Resizer;
 
   beforeEach(() => {
     resizer = new Resizer();
@@ -28,7 +28,7 @@ describe('test Resizer object creation', () => {
 });
 
 describe('test image resize algorithms', () => {
-  var resizer: Resizer;
+  let resizer: Resizer;
 
   beforeAll(() => {
     jasmine.addMatchers(customMatchers);
@@ -175,7 +175,7 @@ describe('test image resize algorithms', () => {
       let scale = mock.width / mock.height;
       let img = new Image();
 
-      let p:Promise<any> = resizer.scaleImage(mock)
+      let p: Promise<any> = resizer.scaleImage(mock)
       .then((resized) => {
         img.src = resized;
         img.onload = Promise.resolve
@@ -230,14 +230,14 @@ describe('test image resize algorithms', () => {
   });
 
   it('should correctly create thumbs from a battery of images of different sizes', (done) => {
-    let ps:Array<Promise<any>> = [];
+    let ps: Array<Promise<any>> = [];
     for (let i = 0; i < TEST_RUNS; i++) {
       let width = randomIntFromInterval(500, 750);
       let height = randomIntFromInterval(500, 750);
       let mock = getMockImage(width, height);
       let img = new Image();
 
-      let p:Promise<any> = resizer.getThumbFromImage(mock)
+      let p: Promise<any> = resizer.getThumbFromImage(mock)
       .then(resized => {
         img.src = resized;
         img.onload = Promise.resolve
@@ -258,22 +258,22 @@ describe('test image resize algorithms', () => {
     resizer.config = {
       maxWidth: 300
     }
-    const ps:Array<Promise<any>> = [];
-    const parser:DOMParser = new DOMParser();
+    const ps: Array<Promise<any>> = [];
+    const parser: DOMParser = new DOMParser();
     let htmlText = 'div'
     for (let i = 0; i < 3; i++) {
       let width = randomIntFromInterval(500, 750);
       let height = randomIntFromInterval(500, 750);
-      const mock:HTMLImageElement = getMockImage(width, height);
+      const mock = getMockImage(width, height);
       htmlText += `<img src="${mock.src}"></img>`
     }
     htmlText += '</div>'
 
-    const dom:Document = parser.parseFromString(htmlText, 'text/html')
-    const imgs:any = dom.querySelectorAll('img');
+    const dom: Document = parser.parseFromString(htmlText, 'text/html')
+    const imgs: any = dom.querySelectorAll('img');
     imgs.forEach(img => {
       let resized = new Image()
-      let p:Promise<any> = resizer.scaleImage(img)
+      let p: Promise<any> = resizer.scaleImage(img)
       .then(data => {
         resized.src = data;
         resized.onload = Promise.resolve
