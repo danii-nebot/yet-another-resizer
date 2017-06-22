@@ -5,6 +5,7 @@ Yet another implementation of client size image resizing before upload, this tim
 ---
 [![Build Status](https://api.travis-ci.org/danii-nebot/yet-another-resizer.png?branch=master)](https://travis-ci.org/danii-nebot/yet-another-resizer)
 [![npm version](https://badge.fury.io/js/yet-another-resizer.svg)](https://badge.fury.io/js/yet-another-resizer)
+[![codecov](https://codecov.io/gh/danii-nebot/yet-another-resizer/branch/master/graph/badge.svg)](https://codecov.io/gh/danii-nebot/yet-another-resizer)
 ---
 
 WIP
