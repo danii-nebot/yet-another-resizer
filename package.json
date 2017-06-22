@@ -10,7 +10,7 @@
     "precommit": "npm run lint",
     "test": "NODE_ENV=test karma start --single-run",
     "coverage": "NODE_ENV=coverage karma start --single-run",
-    "report-coverage": "cat ./coverage/lcov.info | codecov",
+    "postcoverage": "cat ./coverage/lcov.info | codecov",
     "build": "tsc --sourcemap",
     "postbuild": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
