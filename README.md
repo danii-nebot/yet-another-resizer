@@ -3,7 +3,7 @@
 Yet another implementation of client size image resizing before upload, this time in TypeScript
 
 ---
-[![Build Status](https://api.travis-ci.org/danii-nebot/yet-another-resizer.png?branch=master)](https://travis-ci.org/joanllenas/ngx-date-fns)
+[![Build Status](https://api.travis-ci.org/danii-nebot/yet-another-resizer.png?branch=master)](https://travis-ci.org/danii-nebot/yet-another-resizer)
 [![npm version](https://badge.fury.io/js/yet-another-resizer.svg)](https://badge.fury.io/js/yet-another-resizer)
 ---
 
