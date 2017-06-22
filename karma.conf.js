@@ -17,5 +17,27 @@ module.exports = function (config) {
     singleRun: false
   };
 
+  if (process.env.NODE_ENV === 'coverage') {
+    configuration.frameworks = ['jasmine', 'karma-typescript'];
+    configuration.files = [{ pattern: 'src/**/*.ts', included: true, watched: true }];
+    configuration.preprocessors = {
+      'src/**/*.ts': ['karma-typescript']
+    };
+    configuration.reporters = ['progress', 'karma-typescript'];
+    configuration.karmaTypescriptConfig = {
+      reports: {
+        lcovonly: {
+            directory: './',
+            subdirectory: 'coverage',
+            filename: 'lcov.info'
+        },
+        html: {
+          directory: './',
+          subdirectory: 'coverage'
+        }
+      }
+    };
+  }
+
   config.set(configuration);
 };

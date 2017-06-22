@@ -2,6 +2,9 @@
 dist
 demo
 
+# coverage
+coverage
+
 # npm
 *.tgz
 npm-debug.log
