@@ -9,7 +9,9 @@
     "commit": "git-cz",
     "precommit": "npm run lint",
     "test": "NODE_ENV=test karma start --single-run",
-    "build": "tsc",
+    "coverage": "NODE_ENV=coverage karma start --single-run",
+    "report-coverage": "cat ./coverage/lcov.info | codecov -t c93e0fe2-d37e-49c9-b18b-f8274fa8d645",
+    "build": "tsc --sourcemap",
     "postbuild": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
@@ -24,6 +26,7 @@
   "devDependencies": {
     "browser-sync": "^2.15.0",
     "browserify": "^13.1.0",
+    "codecov": "^2.2.0",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
     "jasmine-core": "2.4.1",
@@ -32,6 +35,7 @@
     "karma-chrome-launcher": "^2.1.1",
     "karma-jasmine": "^1.0.2",
     "karma-spec-reporter": "0.0.31",
+    "karma-typescript": "^3.0.4",
     "requirejs": "^2.2.0",
     "semantic-release": "^6.3.6",
     "systemjs": "^0.19.37",
