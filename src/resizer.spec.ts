@@ -48,7 +48,7 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.scaleImage(mock)
       .then((resized) => {
         img.src = resized;
-        img.onload = Promise.resolve
+        img.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
@@ -58,7 +58,7 @@ describe('test image resize algorithms', () => {
       });
     }
     Promise.all(ps)
-    .then(done)
+    .then(done);
   });
 
   it('should never scale up when resizing any images', (done) => {
@@ -71,7 +71,7 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.scaleImage(mock)
         .then((resized) => {
           img.src = resized;
-          img.onload = Promise.resolve
+          img.onload = Promise.resolve;
         })
         .then(() => {
           setTimeout(() => {
@@ -81,7 +81,7 @@ describe('test image resize algorithms', () => {
         });
     }
     Promise.all(ps)
-      .then(done)
+      .then(done);
   });
 
   it('should correctly resize a battery of landscape images to fixed width', (done) => {
@@ -95,7 +95,7 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.scaleImage(mock)
       .then((resized) => {
         img.src = resized;
-        img.onload = Promise.resolve
+        img.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
@@ -106,7 +106,7 @@ describe('test image resize algorithms', () => {
       });
     }
     Promise.all(ps)
-    .then(done)
+    .then(done);
   });
 
   it('should correctly resize a battery of landscape images to fixed height', (done) => {
@@ -124,7 +124,7 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.scaleImage(mock)
       .then((resized) => {
           img.src = resized;
-          img.onload = Promise.resolve
+          img.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
@@ -149,7 +149,7 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.scaleImage(mock)
       .then((resized) => {
         img.src = resized;
-        img.onload = Promise.resolve
+        img.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
@@ -178,7 +178,7 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.scaleImage(mock)
       .then((resized) => {
         img.src = resized;
-        img.onload = Promise.resolve
+        img.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
@@ -190,7 +190,7 @@ describe('test image resize algorithms', () => {
       ps.push(p);
     }
     Promise.all(ps)
-    .then(done)
+    .then(done);
   });
 
   it('should correctly resize a battery of images of different sizes into a box', (done) => {
@@ -210,7 +210,7 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.scaleImage(mock)
       .then((resized) => {
         img.src = resized;
-        img.onload = Promise.resolve
+        img.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
@@ -223,10 +223,10 @@ describe('test image resize algorithms', () => {
           }
         }, 0);
       });
-      ps.push(p)
+      ps.push(p);
     }
     Promise.all(ps)
-    .then(done)
+    .then(done);
   });
 
   it('should correctly create thumbs from a battery of images of different sizes', (done) => {
@@ -240,52 +240,52 @@ describe('test image resize algorithms', () => {
       let p: Promise<any> = resizer.getThumbFromImage(mock)
       .then(resized => {
         img.src = resized;
-        img.onload = Promise.resolve
+        img.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
           expect(img.width).toBe(50);
           expect(img.height).toBe(50);
         }, 0);
-      })
-      ps.push(p)
+      });
+      ps.push(p);
     }
     Promise.all(ps)
-    .then(done)
+    .then(done);
   });
 
   it('should correctly resize from a battery of images parsed with `DomParser` `parseFromString`', (done) => {
     resizer.config = {
       maxWidth: 300
-    }
+    };
     const ps: Array<Promise<any>> = [];
     const parser: DOMParser = new DOMParser();
-    let htmlText = 'div'
+    let htmlText = '<div>';
     for (let i = 0; i < 3; i++) {
       let width = randomIntFromInterval(500, 750);
       let height = randomIntFromInterval(500, 750);
       const mock = getMockImage(width, height);
-      htmlText += `<img src="${mock.src}"></img>`
+      htmlText += `<img src="${mock.src}"></img>`;
     }
-    htmlText += '</div>'
+    htmlText += '</div>';
 
-    const dom: Document = parser.parseFromString(htmlText, 'text/html')
+    const dom: Document = parser.parseFromString(htmlText, 'text/html');
     const imgs: any = dom.querySelectorAll('img');
     imgs.forEach(img => {
-      let resized = new Image()
+      let resized = new Image();
       let p: Promise<any> = resizer.scaleImage(img)
       .then(data => {
         resized.src = data;
-        resized.onload = Promise.resolve
+        resized.onload = Promise.resolve;
       })
       .then(() => {
         setTimeout(() => {
           expect(resized.width).toBeWithinDelta(300, 1);
         }, 0);
-      })
-      ps.push(p)
-    })
+      });
+      ps.push(p);
+    });
     Promise.all(ps)
-    .then(done)
-  })
+    .then(done);
+  });
 });

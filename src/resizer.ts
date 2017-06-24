@@ -44,19 +44,19 @@ export class Resizer {
         return data.split(':')[1];
       }
     }
-    return ''
+    return '';
   }
 
   // quick & dirty thumbnail cut preview
   getThumbFromImage(img: HTMLImageElement): Promise<any> {
     if (!this.config.thumbSize) {
-      return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`))
+      return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`));
     }
 
     const imgType: string = this.getImageType(img);
 
     if (!imgType) {
-      return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
+      return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`));
     }
 
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
@@ -71,7 +71,7 @@ export class Resizer {
     const thumbCanvas = this.createCanvas(thumbSize, thumbSize);
 
     // TODO: scale progressively using getHalfScaleCanvas() function, if thumb quality is crap
-    const context: CanvasRenderingContext2D | null = thumbCanvas.getContext('2d')
+    const context: CanvasRenderingContext2D | null = thumbCanvas.getContext('2d');
     if (context) {
       context.drawImage(img,
         posx, posy,   // start from the top and left coords,
@@ -85,19 +85,19 @@ export class Resizer {
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   scaleImage(_img: HTMLImageElement): Promise<any> {
-    let img = _img
+    let img = _img;
     return new Promise<any>((resolve, reject) => {
-       if (!img.width || !img.height) { // might need for img to load
-         img = new Image()
-         img.src = _img.src
-         img.onload = resolve
+       if (img.src && (!img.width || !img.height)) { // might need for img to load
+         img = new Image();
+         img.src = _img.src;
+         img.onload = resolve;
        } else {
-         return resolve()
+         return resolve();
        }
     })
     .then(() => {
       if (!img.width || !img.height) {
-        return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
+        return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`));
       }
 
       const boxWidth = this.config.maxWidth || 0;
@@ -110,7 +110,7 @@ export class Resizer {
       let snapToWidth: boolean = false;
       let canvas: HTMLCanvasElement = this.createCanvas(img.width, img.height);
 
-      const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
+      const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
       if (context) {
         context.drawImage(img, 0, 0, canvas.width, canvas.height);
       }
@@ -118,7 +118,7 @@ export class Resizer {
       const imgType: string = this.getImageType(img);
 
       if (!imgType) {
-        return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`))
+        return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`));
       }
 
       let scale = 1;
@@ -148,15 +148,15 @@ export class Resizer {
 
       const imageData = canvas.toDataURL(`${imgType}`, this.config.quality);
       return Promise.resolve(imageData);
-    })
+    });
   }
 
   // source:
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   scaleCanvasWithAlgorithm(canvas: HTMLCanvasElement, scale: number) {
     const scaledCanvas = this.createCanvas(canvas.width * scale, canvas.height * scale);
-    const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
-    const scaledContext: CanvasRenderingContext2D | null = scaledCanvas.getContext('2d')
+    const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
+    const scaledContext: CanvasRenderingContext2D | null = scaledCanvas.getContext('2d');
     if (context && scaledContext) {
       const srcImgData = context.getImageData(0, 0, canvas.width, canvas.height);
       const destImgData = scaledContext.createImageData(scaledCanvas.width, scaledCanvas.height);
@@ -170,7 +170,7 @@ export class Resizer {
   // https://github.com/rossturner/HTML5-ImageUploader/blob/master/src/main/webapp/js/ImageUploader.js
   getHalfScaleCanvas(canvas: HTMLCanvasElement) {
     const halfCanvas = this.createCanvas(canvas.width / 2, canvas.height / 2);
-    const context: CanvasRenderingContext2D | null = halfCanvas.getContext('2d')
+    const context: CanvasRenderingContext2D | null = halfCanvas.getContext('2d');
     if (context) {
       context.drawImage(canvas, 0, 0, halfCanvas.width, halfCanvas.height);
     }

@@ -6,8 +6,8 @@ export const customMatchers: any = {
         return {
           pass: Math.abs(actual - expected) <= delta,
           message: `Expected ${actual} to be within ${expected} ± ${delta}`
-        }
+        };
       }
-    }
+    };
   }
-}
+};
