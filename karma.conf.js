@@ -18,6 +18,7 @@ module.exports = function (config) {
   };
 
   if (process.env.NODE_ENV === 'coverage') {
+    configuration.browserNoActivityTimeout = 20000; // :_(
     configuration.frameworks = ['jasmine', 'karma-typescript'];
     configuration.files = [{ pattern: 'src/**/*.ts', included: true, watched: true }];
     configuration.preprocessors = {

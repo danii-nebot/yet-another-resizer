@@ -47,6 +47,11 @@ export class Resizer {
     return '';
   }
 
+  isImageType(type: string): boolean {
+    const typeSplit = type.split('/');
+    return typeSplit[0] === 'image';
+  }
+
   // quick & dirty thumbnail cut preview
   getThumbFromImage(img: HTMLImageElement): Promise<any> {
     if (!this.config.thumbSize) {
@@ -55,7 +60,7 @@ export class Resizer {
 
     const imgType: string = this.getImageType(img);
 
-    if (!imgType) {
+    if (!this.isImageType(imgType)) {
       return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`));
     }
 
@@ -117,7 +122,7 @@ export class Resizer {
 
       const imgType: string = this.getImageType(img);
 
-      if (!imgType) {
+      if (!this.isImageType(imgType)) {
         return Promise.reject(new Error(`Error: img src ${img.src} does not appear to be a valid image`));
       }
 
