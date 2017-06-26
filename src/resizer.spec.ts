@@ -369,6 +369,39 @@ describe('test image resize algorithms', () => {
     .then(done);
   });
 
+  it('should correctly create thumbs from a battery of images parsed with `DomParser` `parseFromString`', (done) => {
+    const ps: Array<Promise<any>> = [];
+    const parser: DOMParser = new DOMParser();
+    let htmlText = '<div>';
+    for (let i = 0; i < 3; i++) {
+      let width = randomIntFromInterval(500, 750);
+      let height = randomIntFromInterval(500, 750);
+      const mock = getMockImage(width, height);
+      htmlText += `<img src="${mock.src}"></img>`;
+    }
+    htmlText += '</div>';
+
+    const dom: Document = parser.parseFromString(htmlText, 'text/html');
+    const imgs: any = dom.querySelectorAll('img');
+    imgs.forEach(img => {
+      let resized = new Image();
+      let p: Promise<any> = resizer.getThumbFromImage(img)
+      .then(data => {
+        resized.src = data;
+        resized.onload = Promise.resolve;
+      })
+      .then(() => {
+        setTimeout(() => {
+          expect(img.width).toBe(50);
+          expect(img.height).toBe(50);
+        }, 0);
+      });
+      ps.push(p);
+    });
+    Promise.all(ps)
+    .then(done);
+  });
+
   it('should correctly resize from a battery of images parsed with `DomParser` `parseFromString`', (done) => {
     resizer.config = {
       maxWidth: 300

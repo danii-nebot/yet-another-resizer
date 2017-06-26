@@ -53,10 +53,21 @@ export class Resizer {
   }
 
   // quick & dirty thumbnail cut preview
-  getThumbFromImage(img: HTMLImageElement): Promise<any> {
-    if (!this.config.thumbSize) {
-      return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`));
-    }
+  getThumbFromImage(_img: HTMLImageElement): Promise<any> {
+    let img = _img;
+    return new Promise<any>((resolve, reject) => {
+      if (img.src && (!img.width || !img.height)) { // might need for img to load
+        img = new Image();
+        img.src = _img.src;
+        img.onload = resolve;
+      } else {
+        return resolve();
+      }
+    })
+    .then(() => {
+      if (!this.config.thumbSize) {
+        return Promise.reject(new Error(`Error: getThumbFromImage ${JSON.stringify(this.config)} does not define thumbSize`));
+      }
 
     const imgType: string = this.getImageType(img);
 
@@ -67,6 +78,7 @@ export class Resizer {
     let canvas = this.scaleAndCropThumb(img, this.config.thumbSize);
     let imageData: any = canvas.toDataURL(imgType, this.config.quality);
     return Promise.resolve(imageData);
+    });
   }
 
   scaleAndCropThumb(img: any, thumbSize: number) {
