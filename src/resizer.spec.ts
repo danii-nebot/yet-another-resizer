@@ -166,10 +166,13 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(img.width).toBe(300);
-          expect(img.height).toBe(300);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(img.width).toBe(300);
+            expect(img.height).toBe(300);
+            resolve();
+          }, 0);
+        });
       });
     }
     Promise.all(ps)
@@ -189,10 +192,13 @@ describe('test image resize algorithms', () => {
           img.onload = Promise.resolve;
         })
         .then(() => {
-          setTimeout(() => {
-            expect(img.width).toBe(size);
-            expect(img.height).toBe(size);
-          }, 0);
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              expect(img.width).toBe(size);
+              expect(img.height).toBe(size);
+              resolve();
+            }, 0);
+          });
         });
     }
     Promise.all(ps)
@@ -213,11 +219,14 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(img.width).toBeWithinDelta(300, 1);
-          // javascript floating point precision might be messing this up...
-          expect(img.height).toBeWithinDelta(300 / scale, 2);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(img.width).toBeWithinDelta(300, 1);
+            // javascript floating point precision might be messing this up...
+            expect(img.height).toBeWithinDelta(300 / scale, 2);
+            resolve();
+          }, 0);
+        });
       });
     }
     Promise.all(ps)
@@ -242,11 +251,14 @@ describe('test image resize algorithms', () => {
           img.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(img.height).toBeWithinDelta(300, 1);
-          // javascript floating point precision might be messing this up...
-          expect(img.width).toBeWithinDelta(300 * scale, 2);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(img.height).toBeWithinDelta(300, 1);
+            // javascript floating point precision might be messing this up...
+            expect(img.width).toBeWithinDelta(300 * scale, 2);
+            resolve();
+          }, 0);
+        });
       });
     }
     Promise.all(ps)
@@ -267,11 +279,14 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(img.width).toBeWithinDelta(300, 1);
-          // javascript floating point precision might be messing this up...
-          expect(img.height).toBeWithinDelta(300 / scale, 2);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(img.width).toBeWithinDelta(300, 1);
+            // javascript floating point precision might be messing this up...
+            expect(img.height).toBeWithinDelta(300 / scale, 2);
+            resolve();
+          }, 0);
+        });
       });
     }
     Promise.all(ps)
@@ -296,11 +311,14 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(img.height).toBeWithinDelta(300, 1);
-          // javascript floating point precision might be messing this up...
-          expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(img.height).toBeWithinDelta(300, 1);
+            // javascript floating point precision might be messing this up...
+            expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
+            resolve();
+          }, 0);
+        });
       });
       ps.push(p);
     }
@@ -328,15 +346,18 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          if (scale >= 1) {
-            expect(img.width).toBeWithinDelta(300, 1);
-            expect(img.height).toBeWithinDelta(Math.floor(300 / scale), 2);
-          } else {
-            expect(img.height).toBeWithinDelta(300, 1);
-            expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
-          }
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (scale >= 1) {
+              expect(img.width).toBeWithinDelta(300, 1);
+              expect(img.height).toBeWithinDelta(Math.floor(300 / scale), 2);
+            } else {
+              expect(img.height).toBeWithinDelta(300, 1);
+              expect(img.width).toBeWithinDelta(Math.floor(300 * scale), 2);
+            }
+            resolve();
+          }, 0);
+        });
       });
       ps.push(p);
     }
@@ -358,10 +379,13 @@ describe('test image resize algorithms', () => {
         img.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(img.width).toBe(50);
-          expect(img.height).toBe(50);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(img.width).toBe(50);
+            expect(img.height).toBe(50);
+            resolve();
+          }, 0);
+        });
       });
       ps.push(p);
     }
@@ -391,10 +415,13 @@ describe('test image resize algorithms', () => {
         resized.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(img.width).toBe(50);
-          expect(img.height).toBe(50);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(resized.width).toBe(50);
+            expect(resized.height).toBe(50);
+            resolve();
+          }, 0);
+        });
       });
       ps.push(p);
     });
@@ -427,9 +454,12 @@ describe('test image resize algorithms', () => {
         resized.onload = Promise.resolve;
       })
       .then(() => {
-        setTimeout(() => {
-          expect(resized.width).toBeWithinDelta(300, 1);
-        }, 0);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            expect(resized.width).toBeWithinDelta(300, 1);
+            resolve();
+          }, 0);
+        });
       });
       ps.push(p);
     });
